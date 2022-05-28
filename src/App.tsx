@@ -1,13 +1,12 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import ChessBoard from "./components/ChessBoard";
 
 function App() {
   return (
-<div>
-  chess board
-</div>
-
+    <div id="app">
+      <ChessBoard />
+    </div>
   );
 }
 
