@@ -9,15 +9,12 @@ function Tile({ number, image }: Props) {
   if (number % 2 === 0) {
     return (
       <div className="tile black-tile">
-        {
-
-image && 
-        <div
-        style={{backgroundImage: `url(${image})`}}
-        className="chess-piece"
-        ></div>
-        }
-
+        {image && (
+          <div
+            style={{ backgroundImage: `url(${image})` }}
+            className="chess-piece"
+          ></div>
+        )}
 
         {/* <img  src={image} /> */}
         {/* [{HORIZONTAL_AXIS[i]} {VERTICAL_AXIS[j]}] */}
@@ -26,14 +23,12 @@ image &&
   } else {
     return (
       <div className="tile white-tile">
-{
-
-image && 
-        <div
-        style={{backgroundImage: `url(${image})`}}
-        className="chess-piece"
-        ></div>
-}
+        {image && (
+          <div
+            style={{ backgroundImage: `url(${image})` }}
+            className="chess-piece"
+          ></div>
+        )}
         {/* [{HORIZONTAL_AXIS[i]} {VERTICAL_AXIS[j]}] */}
       </div>
     );
