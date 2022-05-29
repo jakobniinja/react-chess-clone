@@ -4,6 +4,13 @@
   width: 100px;
   height: 100px;
 }
+.tile .chess-piece {
+  height: 100px;
+  width: 100px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 80px;
+}
 
 .black-tile {
   background-color: #779556;
@@ -13,6 +20,6 @@
   background-color: #ebecd0;
 }
 
-.tile  img {
+.tile img {
   width: 80px;
 }
