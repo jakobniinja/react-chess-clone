@@ -1,7 +1,10 @@
+import { useRef } from "react";
 import Tile from "../Tile/Tile";
 import "./Chessboard.css";
 
 export default function Chessboard() {
+  const chessboardRef = useRef<HTMLDivElement>(null);
+
   const HORIZONTAL_AXIS = ["a", "b", "c", "d", "e", "f", "g", "h"];
   const VERTICAL_AXIS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 
@@ -54,14 +57,39 @@ export default function Chessboard() {
   const movePiece = (e: React.MouseEvent) => {
     const el = e.target as HTMLElement;
 
-    if (activePiece) {
+    const chessboard = chessboardRef.current;
+    if (activePiece && chessboard) {
       console.log(el);
 
+      const minX = chessboard.offsetLeft - 25;
+      const minY = chessboard.offsetTop - 25;
+      const maxX = chessboard.offsetLeft + chessboard.clientWidth - 75;
+      const maxY = chessboard.offsetTop + chessboard.clientHeight - 75;
       const x = e.clientX - 50;
       const y = e.clientY - 50;
       activePiece.style.position = "absolute";
-      activePiece.style.left = `${x}px`;
-      activePiece.style.top = `${y}px`;
+      console.log(chessboard);
+
+      // if x is less then minimum amount
+      if (x < minX) {
+        activePiece.style.left = `${minX}px`;
+      }
+      // if x is smaller then minimum amount
+      else if (x > maxX) {
+        activePiece.style.left = `${maxX}px`;
+      } else {
+        activePiece.style.left = `${x}px`;
+      }
+      // if y is smaller  then minumum amount
+      if (y < minY) {
+        activePiece.style.top = `${minY}px`;
+      }
+      // if y is greater then maxiumum amount
+      else if (y > maxY) {
+        activePiece.style.top = `${maxY}px`;
+      } else {
+        activePiece.style.top = `${y}px`;
+      }
     }
   };
   const dropPiece = (e: React.MouseEvent) => {
@@ -85,12 +113,14 @@ export default function Chessboard() {
       board.push(<Tile key={`${j},${i}`} image={image} number={number} />);
     }
   }
+
   return (
     <div
       onMouseMove={(e) => movePiece(e)}
       onMouseDown={(e) => grabPiece(e)}
       onMouseUp={(e) => dropPiece(e)}
       id="chessboard"
+      ref={chessboardRef}
     >
       {board}
     </div>
