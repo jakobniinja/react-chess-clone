@@ -1,9 +1,11 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Tile from "../Tile/Tile";
 import "./Chessboard.css";
 
 export default function Chessboard() {
   const chessboardRef = useRef<HTMLDivElement>(null);
+  const initialBoardState: Piece[] = [];
+  const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
 
   const HORIZONTAL_AXIS = ["a", "b", "c", "d", "e", "f", "g", "h"];
   const VERTICAL_AXIS = ["1", "2", "3", "4", "5", "6", "7", "8"];
@@ -14,29 +16,31 @@ export default function Chessboard() {
     y: number;
   }
 
-  const pieces: Piece[] = [];
+  useEffect(() => {
+    for (let p = 0; p < 2; p++) {
+      const type = p === 0 ? "b" : "w";
+      const y = p === 0 ? 7 : 0;
 
-  for (let p = 0; p < 2; p++) {
-    const type = p === 0 ? "b" : "w";
-    const y = p === 0 ? 7 : 0;
+      initialBoardState.push({ image: `./assets/images/rook_${type}.png`, x: 0, y });
+      initialBoardState.push({ image: `./assets/images/rook_${type}.png`, x: 7, y });
+      initialBoardState.push({ image: `./assets/images/knight_${type}.png`, x: 1, y });
+      initialBoardState.push({ image: `./assets/images/knight_${type}.png`, x: 6, y });
+      initialBoardState.push({ image: `./assets/images/bishop_${type}.png`, x: 2, y });
+      initialBoardState.push({ image: `./assets/images/bishop_${type}.png`, x: 5, y });
+      initialBoardState.push({ image: `./assets/images/king_${type}.png`, x: 4, y });
+      initialBoardState.push({ image: `./assets/images/queen_${type}.png`, x: 3, y });
+    }
 
-    pieces.push({ image: `./assets/images/rook_${type}.png`, x: 0, y });
-    pieces.push({ image: `./assets/images/rook_${type}.png`, x: 7, y });
-    pieces.push({ image: `./assets/images/knight_${type}.png`, x: 1, y });
-    pieces.push({ image: `./assets/images/knight_${type}.png`, x: 6, y });
-    pieces.push({ image: `./assets/images/bishop_${type}.png`, x: 2, y });
-    pieces.push({ image: `./assets/images/bishop_${type}.png`, x: 5, y });
-    pieces.push({ image: `./assets/images/king_${type}.png`, x: 4, y });
-    pieces.push({ image: `./assets/images/queen_${type}.png`, x: 3, y });
-  }
+    for (let i = 0; i < 8; i++) {
+      pieces.push({ image: "./assets/images/pawn_b.png", x: i, y: 6 });
+    }
 
-  for (let i = 0; i < 8; i++) {
-    pieces.push({ image: "./assets/images/pawn_b.png", x: i, y: 6 });
-  }
+    for (let i = 0; i < 8; i++) {
+      pieces.push({ image: "./assets/images/pawn_w.png", x: i, y: 1 });
+    }
+  }, [pieces]);
 
-  for (let i = 0; i < 8; i++) {
-    pieces.push({ image: "./assets/images/pawn_w.png", x: i, y: 1 });
-  }
+  // const pieces: Piece[] = [];
 
   let activePiece: HTMLElement | null = null;
 
