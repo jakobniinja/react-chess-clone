@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-import { validateLocaleAndSetLanguage } from "typescript";
+import { useRef, useState } from "react";
 import Tile from "../Tile/Tile";
 import "./Chessboard.css";
 
 export default function Chessboard() {
+  const [activePiece, setActivePiece] = useState<HTMLElement | null >(null)
   const [gridX, setGridX] = useState(0);
   const [gridY, setGridY] = useState(0);
   const chessboardRef = useRef<HTMLDivElement>(null);
@@ -75,24 +75,21 @@ export default function Chessboard() {
 
   // const pieces: Piece[] = [];
 
-  let activePiece: HTMLElement | null = null;
 
   const grabPiece = (e: React.MouseEvent) => {
     const chessboard = chessboardRef.current;
     const el = e.target as HTMLElement;
     if (el.classList.contains("chess-piece") && chessboard) {
       console.log(e);
-      const gridX = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
-      const gridY = Math.abs(Math.floor((e.clientY - chessboard.offsetTop - 700) / 100));
-      setGridX(gridX);
-      setGridY(gridY);
+      setGridX(Math.floor((e.clientX - chessboard.offsetLeft) / 100));
+      setGridY(Math.abs(Math.floor((e.clientY - chessboard.offsetTop - 700) / 100)));
 
       const x = e.clientX - 50;
       const y = e.clientY - 50;
       el.style.position = "absolute";
       el.style.left = `${x}px`;
       el.style.top = `${y}px`;
-      activePiece = el;
+      setActivePiece(el)
     }
   };
 
@@ -154,7 +151,7 @@ export default function Chessboard() {
 
         return pieces;
       });
-      activePiece = null;
+    setActivePiece(null)
     }
   };
 
