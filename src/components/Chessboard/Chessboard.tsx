@@ -131,14 +131,14 @@ export default function Chessboard() {
     const chessboard = chessboardRef.current;
     if (activePiece && chessboard) {
       setPieces((value) => {
-        const x = Math.floor(e.clientX - chessboard.offsetLeft ) / 100;
-        const y = Math.abs(Math.ceil(e.clientY - chessboard.offsetTop -800 ) / 100);
+        const x = Math.floor((e.clientX - chessboard.offsetLeft )  / 100);
+        const y = Math.abs(Math.floor((e.clientY - chessboard.offsetTop- 700) / 100));
         console.log(x, y);
 
         const pieces = value.map((p) => {
           if (p.x === 1 && p.y === 0) {
-            p.x = 5;
-            p.y = 5;
+            p.x = x;
+            p.y = y;
           }
           return p;
         });
