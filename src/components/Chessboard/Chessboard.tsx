@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { validateLocaleAndSetLanguage } from "typescript";
 import Tile from "../Tile/Tile";
 import "./Chessboard.css";
 
@@ -16,60 +15,28 @@ export default function Chessboard() {
     x: number;
     y: number;
   }
+    for (let p = 0; p < 2; p++) {
+      const type = p === 0 ? "b" : "w";
+      const y = p === 0 ? 7 : 0;
 
-  for (let p = 0; p < 2; p++) {
-    const type = p === 0 ? "b" : "w";
-    const y = p === 0 ? 7 : 0;
+      initialBoardState.push({ image: `./assets/images/rook_${type}.png`, x: 0, y });
+      initialBoardState.push({ image: `./assets/images/rook_${type}.png`, x: 7, y });
+      initialBoardState.push({ image: `./assets/images/knight_${type}.png`, x: 1, y });
+      initialBoardState.push({ image: `./assets/images/knight_${type}.png`, x: 6, y });
+      initialBoardState.push({ image: `./assets/images/bishop_${type}.png`, x: 2, y });
+      initialBoardState.push({ image: `./assets/images/bishop_${type}.png`, x: 5, y });
+      initialBoardState.push({ image: `./assets/images/king_${type}.png`, x: 4, y });
+      initialBoardState.push({ image: `./assets/images/queen_${type}.png`, x: 3, y });
+    }
 
-    initialBoardState.push({
-      image: `./assets/images/rook_${type}.png`,
-      x: 0,
-      y,
-    });
-    initialBoardState.push({
-      image: `./assets/images/rook_${type}.png`,
-      x: 7,
-      y,
-    });
-    initialBoardState.push({
-      image: `./assets/images/knight_${type}.png`,
-      x: 1,
-      y,
-    });
-    initialBoardState.push({
-      image: `./assets/images/knight_${type}.png`,
-      x: 6,
-      y,
-    });
-    initialBoardState.push({
-      image: `./assets/images/bishop_${type}.png`,
-      x: 2,
-      y,
-    });
-    initialBoardState.push({
-      image: `./assets/images/bishop_${type}.png`,
-      x: 5,
-      y,
-    });
-    initialBoardState.push({
-      image: `./assets/images/king_${type}.png`,
-      x: 4,
-      y,
-    });
-    initialBoardState.push({
-      image: `./assets/images/queen_${type}.png`,
-      x: 3,
-      y,
-    });
-  }
+    for (let i = 0; i < 8; i++) {
+      pieces.push({ image: "./assets/images/pawn_b.png", x: i, y: 6 });
+    }
 
-  for (let i = 0; i < 8; i++) {
-    initialBoardState.push({ image: "./assets/images/pawn_b.png", x: i, y: 6 });
-  }
+    for (let i = 0; i < 8; i++) {
+      pieces.push({ image: "./assets/images/pawn_w.png", x: i, y: 1 });
+    }
 
-  for (let i = 0; i < 8; i++) {
-    initialBoardState.push({ image: "./assets/images/pawn_w.png", x: i, y: 1 });
-  }
 
   // const pieces: Piece[] = [];
 
@@ -130,21 +97,20 @@ export default function Chessboard() {
   const dropPiece = (e: React.MouseEvent) => {
     const chessboard = chessboardRef.current;
     if (activePiece && chessboard) {
-      setPieces((value) => {
-        const x = Math.floor(e.clientX - chessboard.offsetLeft ) / 100;
-        const y = Math.abs(Math.ceil(e.clientY - chessboard.offsetTop -800 ) / 100);
-        console.log(x, y);
+      const x = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
+      const y =Math.floor((e.clientY -chessboard.offsetTop) / 100);
+      console.log(x,y)
 
-        const pieces = value.map((p) => {
-          if (p.x === 1 && p.y === 0) {
-            p.x = 5;
-            p.y = 5;
+      setPieces(value => {
+        const pieces =value.map(p => {
+          if(p.x===1 && p.y ===0){
+            p.x =x;
+            p.y =y;
           }
           return p;
-        });
-
-        return pieces;
-      });
+        })
+        return pieces ;
+      })
       activePiece = null;
     }
   };
