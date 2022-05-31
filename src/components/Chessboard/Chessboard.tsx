@@ -4,6 +4,8 @@ import Tile from "../Tile/Tile";
 import "./Chessboard.css";
 
 export default function Chessboard() {
+  const [gridX, setGridX] = useState(0);
+  const [gridY, setGridY] = useState(0);
   const chessboardRef = useRef<HTMLDivElement>(null);
   const initialBoardState: Piece[] = [];
   const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
@@ -76,9 +78,14 @@ export default function Chessboard() {
   let activePiece: HTMLElement | null = null;
 
   const grabPiece = (e: React.MouseEvent) => {
+    const chessboard = chessboardRef.current;
     const el = e.target as HTMLElement;
-    if (el.classList.contains("chess-piece")) {
+    if (el.classList.contains("chess-piece") && chessboard) {
       console.log(e);
+      const gridX = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
+      const gridY = Math.abs(Math.floor((e.clientY - chessboard.offsetTop - 700) / 100));
+      setGridX(gridX);
+      setGridY(gridY);
 
       const x = e.clientX - 50;
       const y = e.clientY - 50;
@@ -131,12 +138,14 @@ export default function Chessboard() {
     const chessboard = chessboardRef.current;
     if (activePiece && chessboard) {
       setPieces((value) => {
-        const x = Math.floor((e.clientX - chessboard.offsetLeft )  / 100);
-        const y = Math.abs(Math.floor((e.clientY - chessboard.offsetTop- 700) / 100));
+        const x = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
+        const y = Math.abs(
+          Math.floor((e.clientY - chessboard.offsetTop - 700) / 100)
+        );
         console.log(x, y);
 
         const pieces = value.map((p) => {
-          if (p.x === 1 && p.y === 0) {
+          if (p.x === gridX && p.y === gridY) {
             p.x = x;
             p.y = y;
           }
