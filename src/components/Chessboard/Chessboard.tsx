@@ -1,23 +1,34 @@
 import { useRef, useState } from "react";
 import Tile from "../Tile/Tile";
 import "./Chessboard.css";
+import Referee from "../../referee/Referee";
+
+export enum PieceType {
+  PAWN,
+  BISHOP,
+  KNIGHT,
+  ROOK,
+  QUEEN,
+  KING,
+}
+interface Piece {
+  image: string;
+  x: number;
+  y: number;
+  type: PieceType;
+}
 
 export default function Chessboard() {
-  const [activePiece, setActivePiece] = useState<HTMLElement | null >(null)
+  const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
   const [gridX, setGridX] = useState(0);
   const [gridY, setGridY] = useState(0);
   const chessboardRef = useRef<HTMLDivElement>(null);
   const initialBoardState: Piece[] = [];
   const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
+  const referee = new Referee();
 
   const HORIZONTAL_AXIS = ["a", "b", "c", "d", "e", "f", "g", "h"];
   const VERTICAL_AXIS = ["1", "2", "3", "4", "5", "6", "7", "8"];
-
-  interface Piece {
-    image: string;
-    x: number;
-    y: number;
-  }
 
   for (let p = 0; p < 2; p++) {
     const type = p === 0 ? "b" : "w";
@@ -27,54 +38,62 @@ export default function Chessboard() {
       image: `./assets/images/rook_${type}.png`,
       x: 0,
       y,
+      type: PieceType.ROOK,
     });
     initialBoardState.push({
       image: `./assets/images/rook_${type}.png`,
       x: 7,
       y,
+      type: PieceType.ROOK,
     });
     initialBoardState.push({
       image: `./assets/images/knight_${type}.png`,
       x: 1,
       y,
+      type: PieceType.KNIGHT,
     });
     initialBoardState.push({
       image: `./assets/images/knight_${type}.png`,
       x: 6,
       y,
+      type: PieceType.KNIGHT,
     });
     initialBoardState.push({
       image: `./assets/images/bishop_${type}.png`,
       x: 2,
       y,
+      type: PieceType.BISHOP,
     });
     initialBoardState.push({
       image: `./assets/images/bishop_${type}.png`,
       x: 5,
       y,
+      type: PieceType.BISHOP,
     });
     initialBoardState.push({
       image: `./assets/images/king_${type}.png`,
       x: 4,
       y,
+type: PieceType.KING
+
     });
     initialBoardState.push({
       image: `./assets/images/queen_${type}.png`,
       x: 3,
       y,
+type: PieceType.QUEEN
     });
   }
 
   for (let i = 0; i < 8; i++) {
-    initialBoardState.push({ image: "./assets/images/pawn_b.png", x: i, y: 6 });
+    initialBoardState.push({ image: "./assets/images/pawn_b.png", x: i, y: 6, type: PieceType.PAWN });
   }
 
   for (let i = 0; i < 8; i++) {
-    initialBoardState.push({ image: "./assets/images/pawn_w.png", x: i, y: 1 });
+    initialBoardState.push({ image: "./assets/images/pawn_w.png", x: i, y: 1, type: PieceType.PAWN  });
   }
 
   // const pieces: Piece[] = [];
-
 
   const grabPiece = (e: React.MouseEvent) => {
     const chessboard = chessboardRef.current;
@@ -82,14 +101,16 @@ export default function Chessboard() {
     if (el.classList.contains("chess-piece") && chessboard) {
       console.log(e);
       setGridX(Math.floor((e.clientX - chessboard.offsetLeft) / 100));
-      setGridY(Math.abs(Math.floor((e.clientY - chessboard.offsetTop - 700) / 100)));
+      setGridY(
+        Math.abs(Math.floor((e.clientY - chessboard.offsetTop - 700) / 100))
+      );
 
       const x = e.clientX - 50;
       const y = e.clientY - 50;
       el.style.position = "absolute";
       el.style.left = `${x}px`;
       el.style.top = `${y}px`;
-      setActivePiece(el)
+      setActivePiece(el);
     }
   };
 
@@ -134,6 +155,7 @@ export default function Chessboard() {
   const dropPiece = (e: React.MouseEvent) => {
     const chessboard = chessboardRef.current;
     if (activePiece && chessboard) {
+      //updates the piece position
       setPieces((value) => {
         const x = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
         const y = Math.abs(
@@ -143,6 +165,7 @@ export default function Chessboard() {
 
         const pieces = value.map((p) => {
           if (p.x === gridX && p.y === gridY) {
+            referee.isValidMove(gridX, gridY, x, y, p.type);
             p.x = x;
             p.y = y;
           }
@@ -151,7 +174,7 @@ export default function Chessboard() {
 
         return pieces;
       });
-    setActivePiece(null)
+      setActivePiece(null);
     }
   };
 
