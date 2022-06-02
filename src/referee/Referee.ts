@@ -33,49 +33,19 @@ export default class Referee {
     console.log(`team  : ${team}`);
 
     if (type === PieceType.PAWN) {
-      if (TeamType.OUR === team) {
-        if (py === 1) {
-          if (px === x && y - py === 1) {
-            console.log("valid move ");
-            if (!this.tileIsOccupied(x, y, boardState)) {
-              return true;
-            }
-          } else if (y - py === 2) {
-            if (
-              !this.tileIsOccupied(x, y, boardState) &&
-              !this.tileIsOccupied(x, y - 1, boardState)
-            ) {
-              return true;
-            }
-          }
-        } else {
-          if (px === x && y - py === 1) {
-            if (!this.tileIsOccupied(x, y, boardState)) {
-              console.log("valid move ");
-              return true;
-            }
-          }
+      const specialRow = team === TeamType.OUR ? 1 : 6;
+      const pawnDirection = team === TeamType.OUR ? 1 : -1;
+
+      if (px === x && py === specialRow && y - py === 2 * pawnDirection) {
+        if (
+          !this.tileIsOccupied(x, y, boardState) &&
+          !this.tileIsOccupied(x, y - pawnDirection, boardState)
+        ) {
+          return true;
         }
-      } else {
-        if (py === 6) {
-          if (px === x && y - py === -1) {
-            console.log("valid opp move ");
-            return true;
-          } else if (px === x && y - py === -2) {
-            if (
-              !this.tileIsOccupied(x, y + 1, boardState) &&
-              !this.tileIsOccupied(x, y + 1, boardState)
-            ) {
-              return true;
-            }
-          }
-        } else {
-          if (px === x && y - py === -1) {
-            console.log("valid opp  move +1 ");
-            if (!this.tileIsOccupied(x, y, boardState)) {
-              return true;
-            }
-          }
+      } else if (px === x && y - py === pawnDirection) {
+        if (!this.tileIsOccupied(x, y, boardState)) {
+          return true;
         }
       }
     }
