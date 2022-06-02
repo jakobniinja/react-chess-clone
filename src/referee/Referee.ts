@@ -18,13 +18,25 @@ export default class Referee {
     if (type === PieceType.PAWN) {
       if (TeamType.OUR === team) {
         if (py === 1) {
-          if (px === x && (y - py === 1 || y - py == 2)) {
+          if (px === x && (y - py === 1 || y - py === 2)) {
             console.log("valid move ");
             return true;
           }
         } else {
           if (px === x && y - py === 1) {
             console.log("valid move ");
+            return true;
+          }
+        }
+      } else {
+        if (py === 6) {
+          if (px === x && (y - py === -1 || y - py === -2)) {
+            console.log("valid opp move ");
+            return true;
+          }
+        } else {
+          if (px === x && y - py === -1) {
+            console.log("valid opp  move +1 ");
             return true;
           }
         }
