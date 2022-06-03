@@ -21,7 +21,7 @@ export interface Piece {
   x: number;
   y: number;
   type: PieceType;
-  team: TeamType
+  team: TeamType;
 }
 
 export default function Chessboard() {
@@ -46,56 +46,56 @@ export default function Chessboard() {
       x: 0,
       y,
       type: PieceType.ROOK,
-    team: teamType
+      team: teamType,
     });
     initialBoardState.push({
       image: `./assets/images/rook_${type}.png`,
       x: 7,
       y,
       type: PieceType.ROOK,
-      team:  teamType
+      team: teamType,
     });
     initialBoardState.push({
       image: `./assets/images/knight_${type}.png`,
       x: 1,
       y,
       type: PieceType.KNIGHT,
-      team:  teamType
+      team: teamType,
     });
     initialBoardState.push({
       image: `./assets/images/knight_${type}.png`,
       x: 6,
       y,
       type: PieceType.KNIGHT,
-      team:  teamType
+      team: teamType,
     });
     initialBoardState.push({
       image: `./assets/images/bishop_${type}.png`,
       x: 2,
       y,
       type: PieceType.BISHOP,
-      team: teamType
+      team: teamType,
     });
     initialBoardState.push({
       image: `./assets/images/bishop_${type}.png`,
       x: 5,
       y,
       type: PieceType.BISHOP,
-      team: teamType
+      team: teamType,
     });
     initialBoardState.push({
       image: `./assets/images/king_${type}.png`,
       x: 4,
       y,
       type: PieceType.KING,
-      team:  teamType
+      team: teamType,
     });
     initialBoardState.push({
       image: `./assets/images/queen_${type}.png`,
       x: 3,
       y,
       type: PieceType.QUEEN,
-      team:  teamType
+      team: teamType,
     });
   }
 
@@ -105,7 +105,7 @@ export default function Chessboard() {
       x: i,
       y: 6,
       type: PieceType.PAWN,
-      team: TeamType.OPPONENT 
+      team: TeamType.OPPONENT,
     });
   }
 
@@ -115,7 +115,7 @@ export default function Chessboard() {
       x: i,
       y: 1,
       type: PieceType.PAWN,
-      team: TeamType.OUR
+      team: TeamType.OUR,
     });
   }
 
@@ -145,8 +145,6 @@ export default function Chessboard() {
 
     const chessboard = chessboardRef.current;
     if (activePiece && chessboard) {
-      console.log(el);
-
       const minX = chessboard.offsetLeft - 25;
       const minY = chessboard.offsetTop - 25;
       const maxX = chessboard.offsetLeft + chessboard.clientWidth - 75;
@@ -154,7 +152,6 @@ export default function Chessboard() {
       const x = e.clientX - 50;
       const y = e.clientY - 50;
       activePiece.style.position = "absolute";
-      console.log(chessboard);
 
       // if x is less then minimum amount
       if (x < minX) {
@@ -182,32 +179,49 @@ export default function Chessboard() {
     const chessboard = chessboardRef.current;
     if (activePiece && chessboard) {
       //updates the piece position
-      setPieces((value) => {
-        const x = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
-        const y = Math.abs(
-          Math.floor((e.clientY - chessboard.offsetTop - 700) / 100)
+
+      const x = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
+      const y = Math.abs(
+        Math.floor((e.clientY - chessboard.offsetTop - 700) / 100)
+      );
+      console.log(x, y);
+      const currentPiece = pieces.find((p) => p.x === gridX && p.y === gridY);
+      const attackedPiece = pieces.find((p) => p.x === x && p.y === y);
+
+      if (currentPiece) {
+        const validMove = referee.isValidMove(
+          gridX,
+          gridY,
+          x,
+          y,
+          currentPiece.type,
+          currentPiece.team,
+          pieces
         );
-        console.log(x, y);
 
-        const pieces = value.map((p) => {
-          if (p.x === gridX && p.y === gridY) {
-            const validMove = referee.isValidMove(gridX, gridY, x, y, p.type, p.team, value);
-            if (validMove ) {
-            p.x = x;
-            p.y = y;
-              
-            }else{
-              activePiece.style.position="relative"
-              activePiece.style.removeProperty('top');
-              activePiece.style.removeProperty('left');
+        if (validMove) {
+          setPieces((value) => {
+            const pieces = value.reduce((acc, piece) => {
+              if (piece.x === currentPiece.x && piece.y === currentPiece.y) {
+                piece.x = x;
+                piece.y = y;
+                acc.push(piece);
+              } else if (!(piece.x === x && piece.y === y)) {
+                acc.push(piece);
+              }
 
-            }
-          }
-          return p;
-        });
+              return acc;
+            }, [] as Piece[]);
 
-        return pieces;
-      });
+            return pieces;
+          });
+        }else {
+              activePiece.style.position = "relative";
+              activePiece.style.removeProperty("top");
+              activePiece.style.removeProperty("left");
+        }
+      }
+
       setActivePiece(null);
     }
   };
