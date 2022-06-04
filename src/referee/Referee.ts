@@ -1,3 +1,5 @@
+import { parseCommandLine } from "typescript";
+import { Z_ASCII } from "zlib";
 import {
   Piece,
   PieceType,
@@ -17,6 +19,22 @@ export default class Referee {
     }
   }
 
+  tileIsOccupiedByOpp(
+    x: number,
+    y: number,
+    boardState: Piece[],
+    team: TeamType
+  ): boolean {
+    const piece = boardState.find(
+      (p) => p.x === x && p.y === y && p.team !== team
+    );
+    if (piece) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   isValidMove(
     px: number,
     py: number,
@@ -26,12 +44,8 @@ export default class Referee {
     team: TeamType,
     boardState: Piece[]
   ) {
-    console.log("referee is checking move ...");
-    console.log(`previous location: (${px},${py})`);
-    console.log(`new location: (${x},${y})`);
-    console.log(`piece type : ${type}`);
-    console.log(`team  : ${team}`);
 
+    // MOVEMENT LOGIC
     if (type === PieceType.PAWN) {
       const specialRow = team === TeamType.OUR ? 1 : 6;
       const pawnDirection = team === TeamType.OUR ? 1 : -1;
@@ -45,6 +59,18 @@ export default class Referee {
         }
       } else if (px === x && y - py === pawnDirection) {
         if (!this.tileIsOccupied(x, y, boardState)) {
+          return true;
+        }
+      }
+      //ATTACK LOGIC
+      else if (x - px === -1 && y - py === pawnDirection) {
+        console.log("bottom - or upper left");
+        if (this.tileIsOccupiedByOpp(x, y, boardState, team)) {
+          return true;
+        }
+      } else if (x - px === 1 && y - py === pawnDirection) {
+        console.log("bottom - or upper right");
+        if (this.tileIsOccupiedByOpp(x, y, boardState, team)) {
           return true;
         }
       }
