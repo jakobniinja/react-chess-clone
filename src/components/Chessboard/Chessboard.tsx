@@ -21,7 +21,7 @@ export interface Piece {
   x: number;
   y: number;
   type: PieceType;
-  team: TeamType
+  team: TeamType;
 }
 
 export default function Chessboard() {
@@ -46,56 +46,56 @@ export default function Chessboard() {
       x: 0,
       y,
       type: PieceType.ROOK,
-    team: teamType
+      team: teamType,
     });
     initialBoardState.push({
       image: `./assets/images/rook_${type}.png`,
       x: 7,
       y,
       type: PieceType.ROOK,
-      team:  teamType
+      team: teamType,
     });
     initialBoardState.push({
       image: `./assets/images/knight_${type}.png`,
       x: 1,
       y,
       type: PieceType.KNIGHT,
-      team:  teamType
+      team: teamType,
     });
     initialBoardState.push({
       image: `./assets/images/knight_${type}.png`,
       x: 6,
       y,
       type: PieceType.KNIGHT,
-      team:  teamType
+      team: teamType,
     });
     initialBoardState.push({
       image: `./assets/images/bishop_${type}.png`,
       x: 2,
       y,
       type: PieceType.BISHOP,
-      team: teamType
+      team: teamType,
     });
     initialBoardState.push({
       image: `./assets/images/bishop_${type}.png`,
       x: 5,
       y,
       type: PieceType.BISHOP,
-      team: teamType
+      team: teamType,
     });
     initialBoardState.push({
       image: `./assets/images/king_${type}.png`,
       x: 4,
       y,
       type: PieceType.KING,
-      team:  teamType
+      team: teamType,
     });
     initialBoardState.push({
       image: `./assets/images/queen_${type}.png`,
       x: 3,
       y,
       type: PieceType.QUEEN,
-      team:  teamType
+      team: teamType,
     });
   }
 
@@ -105,7 +105,7 @@ export default function Chessboard() {
       x: i,
       y: 6,
       type: PieceType.PAWN,
-      team: TeamType.OPPONENT 
+      team: TeamType.OPPONENT,
     });
   }
 
@@ -115,7 +115,7 @@ export default function Chessboard() {
       x: i,
       y: 1,
       type: PieceType.PAWN,
-      team: TeamType.OUR
+      team: TeamType.OUR,
     });
   }
 
@@ -191,16 +191,22 @@ export default function Chessboard() {
 
         const pieces = value.map((p) => {
           if (p.x === gridX && p.y === gridY) {
-            const validMove = referee.isValidMove(gridX, gridY, x, y, p.type, p.team, value);
-            if (validMove ) {
-            p.x = x;
-            p.y = y;
-              
-            }else{
-              activePiece.style.position="relative"
-              activePiece.style.removeProperty('top');
-              activePiece.style.removeProperty('left');
-
+            const validMove = referee.isValidMove(
+              gridX,
+              gridY,
+              x,
+              y,
+              p.type,
+              p.team,
+              value
+            );
+            if (validMove) {
+              p.x = x;
+              p.y = y;
+            } else {
+              activePiece.style.position = "relative";
+              activePiece.style.removeProperty("top");
+              activePiece.style.removeProperty("left");
             }
           }
           return p;
