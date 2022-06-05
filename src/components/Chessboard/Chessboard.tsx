@@ -188,6 +188,9 @@ export default function Chessboard() {
       );
       const currentPiece = pieces.find((p) => p.x === gridX && p.y === gridY);
       const attackedPiece = pieces.find((p) => p.x === x && p.y === y);
+
+      // currentPiece(3,4)
+
       if (currentPiece) {
         const validMove = referee.isValidMove(
           gridX,
@@ -198,11 +201,22 @@ export default function Chessboard() {
           currentPiece.team,
           pieces
         );
+        const isEnpassent = referee.isAppasentMove(
+          gridX,
+          gridY,
+          x,
+          y,
+          currentPiece.type,
+          currentPiece.team,
+          pieces
+
+        )
+
 
         if (validMove) {
           // UPDATE THE PIECE POSITION
             const updatedPieces = pieces.reduce((acc, i) => {
-              if (i.x === currentPiece.x && i.y === currentPiece.y) {
+              if (i.x === gridX && i.y === gridY) {
                 i.x = x;
                 i.y = y;
                 acc.push(i);
@@ -212,26 +226,6 @@ export default function Chessboard() {
               return acc;
             }, [] as Piece[]);
             setPieces(updatedPieces)
-
-
-
-
-
-
-
-          // setPieces((value) => {
-          //   const pieces = value.reduce((acc, i) => {
-          //     if (i.x === currentPiece.x && i.y === currentPiece.y) {
-          //       i.x = x;
-          //       i.y = y;
-          //       acc.push(i);
-          //     } else if (!(i.x === x && i.y === y)) {
-          //       acc.push(i);
-          //     }
-          //     return acc;
-          //   }, [] as Piece[]);
-          //   return pieces;
-          // });
         } else {
           // RESET THE PIECE POSITION
           activePiece.style.position = "relative";
