@@ -35,6 +35,23 @@ export default class Referee {
     }
   }
 
+  isAppasentMove = (
+    x: number,
+    y: number,
+    boardState: Piece[],
+    team: TeamType
+  ) => {
+    const pieceDirection = team === TeamType.OUR ? 1 : -1;
+    const piece = boardState.find(
+      (p) => p.x === x && p.y === y + pieceDirection
+    );
+    if (piece) {
+    } else {
+      console.log("appasentPiece");
+    }
+  };
+
+
   isValidMove(
     px: number,
     py: number,
@@ -44,7 +61,6 @@ export default class Referee {
     team: TeamType,
     boardState: Piece[]
   ) {
-
     // MOVEMENT LOGIC
     if (type === PieceType.PAWN) {
       const specialRow = team === TeamType.OUR ? 1 : 6;

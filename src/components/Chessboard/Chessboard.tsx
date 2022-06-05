@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { isValidElement, useRef, useState } from "react";
 import Tile from "../Tile/Tile";
 import "./Chessboard.css";
 import Referee from "../../referee/Referee";
@@ -182,38 +182,64 @@ export default function Chessboard() {
     const chessboard = chessboardRef.current;
     if (activePiece && chessboard) {
       //updates the piece position
-      setPieces((value) => {
-        const x = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
-        const y = Math.abs(
-          Math.floor((e.clientY - chessboard.offsetTop - 700) / 100)
+      const x = Math.floor((e.clientX - chessboard.offsetLeft) / 100);
+      const y = Math.abs(
+        Math.floor((e.clientY - chessboard.offsetTop - 700) / 100)
+      );
+      const currentPiece = pieces.find((p) => p.x === gridX && p.y === gridY);
+      const attackedPiece = pieces.find((p) => p.x === x && p.y === y);
+      if (currentPiece) {
+        const validMove = referee.isValidMove(
+          gridX,
+          gridY,
+          x,
+          y,
+          currentPiece.type,
+          currentPiece.team,
+          pieces
         );
-        console.log(x, y);
 
-        const pieces = value.map((p) => {
-          if (p.x === gridX && p.y === gridY) {
-            const validMove = referee.isValidMove(
-              gridX,
-              gridY,
-              x,
-              y,
-              p.type,
-              p.team,
-              value
-            );
-            if (validMove) {
-              p.x = x;
-              p.y = y;
-            } else {
-              activePiece.style.position = "relative";
-              activePiece.style.removeProperty("top");
-              activePiece.style.removeProperty("left");
-            }
-          }
-          return p;
-        });
+        if (validMove) {
+          // UPDATE THE PIECE POSITION
+            const updatedPieces = pieces.reduce((acc, i) => {
+              if (i.x === currentPiece.x && i.y === currentPiece.y) {
+                i.x = x;
+                i.y = y;
+                acc.push(i);
+              } else if (!(i.x === x && i.y === y)) {
+                acc.push(i);
+              }
+              return acc;
+            }, [] as Piece[]);
+            setPieces(updatedPieces)
 
-        return pieces;
-      });
+
+
+
+
+
+
+          // setPieces((value) => {
+          //   const pieces = value.reduce((acc, i) => {
+          //     if (i.x === currentPiece.x && i.y === currentPiece.y) {
+          //       i.x = x;
+          //       i.y = y;
+          //       acc.push(i);
+          //     } else if (!(i.x === x && i.y === y)) {
+          //       acc.push(i);
+          //     }
+          //     return acc;
+          //   }, [] as Piece[]);
+          //   return pieces;
+          // });
+        } else {
+          // RESET THE PIECE POSITION
+          activePiece.style.position = "relative";
+          activePiece.style.removeProperty("top");
+          activePiece.style.removeProperty("left");
+        }
+      }
+
       setActivePiece(null);
     }
   };
