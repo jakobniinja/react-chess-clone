@@ -1,5 +1,3 @@
-import { parseCommandLine } from "typescript";
-import { Z_ASCII } from "zlib";
 import {
   Piece,
   PieceType,
@@ -46,26 +44,26 @@ export default class Referee {
   ) => {
     const pawnDirection = team === TeamType.OUR ? 1 : -1;
     if (type === PieceType.PAWN) {
-      if ((x - px === -1  || x-px ===1) && y - py === pawnDirection) {
+      if ((x - px === -1 || x - px === 1) && y - py === pawnDirection) {
         console.log("bottom - or upper left");
         console.log("bottom - or upper right");
-        const piece = boardState.find((p) => 
-          p.x === x && p.y === y+pawnDirection
-        )
-      
-      } 
+        const piece = boardState.find(
+          (p) => p.x === x && p.y === y - pawnDirection && p.enPassent
+        );
+        if (piece) {
+          return true;
+        }
+      }
     }
 
     // if the attacking piece is a pawn
     // upper left / upper right || bottom left / bottom right
     // if a piece under / above the attacked tile
     // if the attacked piece has made a appasent move in the previous turn
-    // if (piece) {
-    //   return true;
-    // } else {
-    //   console.log("appasentPiece");
-    //   return false;
-    // }
+
+    // put piece in correct position
+    // remove enpassant piece
+    return false;
   };
 
   isValidMove(

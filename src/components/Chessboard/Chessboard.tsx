@@ -22,6 +22,7 @@ export interface Piece {
   y: number;
   type: PieceType;
   team: TeamType;
+  enPassent?: boolean;
 }
 
 export default function Chessboard() {
@@ -201,7 +202,7 @@ export default function Chessboard() {
           currentPiece.team,
           pieces
         );
-        const isEnpassent = referee.isAppasentMove(
+        const isEnpassentMove = referee.isAppasentMove(
           gridX,
           gridY,
           x,
@@ -209,23 +210,48 @@ export default function Chessboard() {
           currentPiece.type,
           currentPiece.team,
           pieces
+        );
 
-        )
-
-
-        if (validMove) {
-          // UPDATE THE PIECE POSITION
-            const updatedPieces = pieces.reduce((acc, i) => {
-              if (i.x === gridX && i.y === gridY) {
-                i.x = x;
-                i.y = y;
-                acc.push(i);
-              } else if (!(i.x === x && i.y === y)) {
-                acc.push(i);
+        const pawnDirection = currentPiece.team === TeamType.OUR ? 1 : -1;
+        if (isEnpassentMove) {
+          const updatePiece = pieces.reduce((acc, i) => {
+            if (i.x === gridX && i.y === gridY) {
+              i.enPassent = false;
+              i.x = x;
+              i.y = y;
+              acc.push(i);
+            } else if (!(i.x === x && i.y === y - pawnDirection)) {
+              if (i.type === PieceType.PAWN) {
+                i.enPassent = false;
               }
-              return acc;
-            }, [] as Piece[]);
-            setPieces(updatedPieces)
+              acc.push(i);
+            }
+            return acc;
+          }, [] as Piece[]);
+          setPieces(updatePiece);
+
+        } else if (validMove) {
+          // UPDATE THE PIECE POSITION
+          const updatedPieces = pieces.reduce((acc, i) => {
+            if (i.x === gridX && i.y === gridY) {
+              if (Math.abs(gridY - y) === 2 && i.type === PieceType.PAWN) {
+                // SPECIAL MOVE
+                i.enPassent = true;
+              } else {
+                i.enPassent = false;
+              }
+              i.x = x;
+              i.y = y;
+              acc.push(i);
+            } else if (!(i.x === x && i.y === y)) {
+              if (i.type === PieceType.PAWN) {
+                i.enPassent = false;
+              }
+              acc.push(i);
+            }
+            return acc;
+          }, [] as Piece[]);
+          setPieces(updatedPieces);
         } else {
           // RESET THE PIECE POSITION
           activePiece.style.position = "relative";
