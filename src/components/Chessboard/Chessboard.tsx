@@ -1,41 +1,20 @@
 import { isValidElement, useRef, useState } from "react";
 import Tile from "../Tile/Tile";
 import "./Chessboard.css";
+
 import Referee from "../../referee/Referee";
+import {HORIZONTAL_AXIS, VERTICAL_AXIS, PieceType, TeamType, Piece } from "../../Constants"
 
-export enum PieceType {
-  PAWN,
-  BISHOP,
-  KNIGHT,
-  ROOK,
-  QUEEN,
-  KING,
-}
 
-export enum TeamType {
-  OPPONENT,
-  OUR,
-}
-export interface Piece {
-  image: string;
-  x: number;
-  y: number;
-  type: PieceType;
-  team: TeamType;
-  enPassent?: boolean;
-}
 
 export default function Chessboard() {
   const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
   const [gridX, setGridX] = useState(0);
   const [gridY, setGridY] = useState(0);
   const chessboardRef = useRef<HTMLDivElement>(null);
-  const initialBoardState: Piece[] = [];
   const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
   const referee = new Referee();
 
-  const HORIZONTAL_AXIS = ["a", "b", "c", "d", "e", "f", "g", "h"];
-  const VERTICAL_AXIS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 
   for (let p = 0; p < 2; p++) {
     const teamType = p === 0 ? TeamType.OPPONENT : TeamType.OUR;

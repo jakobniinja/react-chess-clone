@@ -2,7 +2,7 @@ import {
   Piece,
   PieceType,
   TeamType,
-} from "./../components/Chessboard/Chessboard";
+} from "./../Constants";
 
 export default class Referee {
   tileIsOccupied(x: number, y: number, boardState: Piece[]) {
