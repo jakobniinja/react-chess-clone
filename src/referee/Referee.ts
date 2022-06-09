@@ -8,7 +8,7 @@ export default class Referee {
   tileIsOccupied(x: number, y: number, boardState: Piece[]) {
     console.log("tile is occupied");
 
-    const piece = boardState.find((p) => p.x === x && p.y === y);
+    const piece = boardState.find((p) => p.position.x === x && p.position.y === y);
 
     if (piece) {
       return true;
@@ -24,7 +24,7 @@ export default class Referee {
     team: TeamType
   ): boolean {
     const piece = boardState.find(
-      (p) => p.x === x && p.y === y && p.team !== team
+      (p) => p.position.x === x && p.position.y === y && p.team !== team
     );
     if (piece) {
       return true;
@@ -48,7 +48,7 @@ export default class Referee {
         console.log("bottom - or upper left");
         console.log("bottom - or upper right");
         const piece = boardState.find(
-          (p) => p.x === x && p.y === y - pawnDirection && p.enPassent
+          (p) => p.position.x === x && p.position.y === y - pawnDirection && p.enPassent
         );
         if (piece) {
           return true;
