@@ -146,27 +146,29 @@ export default class Referee {
       // BOTTOM LINE
       if (desiredPosition.y - initialPosition.y === -2) {
         if (desiredPosition.x - initialPosition.x === -1) {
-          console.log("bottom left line knight");
+          console.log("bottom-left ");
         } else if (desiredPosition.x - initialPosition.x === 1) {
-          console.log("bottom right line knight");
+          console.log("bottom-right ");
         }
       }
 
-      // RIGHT LINE
-      if (desiredPosition.x - initialPosition.x === -2) {
-        if (desiredPosition.y - initialPosition.y === 1) {
-          console.log("top right  line ");
-        } else if (desiredPosition.y - initialPosition.y === -1) {
-          console.log("bottom right line ");
+      // MIDDLE TOP
+      if (desiredPosition.y - initialPosition.y === 1) {
+        if (desiredPosition.x - initialPosition.x === 2) {
+          console.log("middle-top right");
+        }
+        if (desiredPosition.x - initialPosition.x === -2) {
+          console.log("middle-top left");
         }
       }
 
-      // LEFT LINE
-      if (desiredPosition.x - initialPosition.x === -2) {
-        if (desiredPosition.y - initialPosition.y === 1) {
-          console.log("left-top");
-        } if (desiredPosition.y - initialPosition.y === -1) {
-          console.log("left-bottom ");
+      // MIDDLE BOTTOM
+      if (desiredPosition.y - initialPosition.y === -1) {
+        if (desiredPosition.x - initialPosition.x === 2) {
+          console.log("middle-bottom right");
+        }
+        if (desiredPosition.x - initialPosition.x === -2) {
+          console.log("middle-bottom  left");
         }
       }
     }
