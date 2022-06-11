@@ -26,7 +26,6 @@ export default function Chessboard() {
     const chessboard = chessboardRef.current;
     const el = e.target as HTMLElement;
     if (el.classList.contains("chess-piece") && chessboard) {
-      console.log(e);
       const grabX = Math.floor((e.clientX - chessboard.offsetLeft) / GRID_SIZE);
       const grabY = Math.abs(
         Math.floor((e.clientY - chessboard.offsetTop - 700) / GRID_SIZE)
@@ -47,7 +46,6 @@ export default function Chessboard() {
 
     const chessboard = chessboardRef.current;
     if (activePiece && chessboard) {
-      console.log(el);
 
       const minX = chessboard.offsetLeft - 25;
       const minY = chessboard.offsetTop - 25;
@@ -56,7 +54,6 @@ export default function Chessboard() {
       const x = e.clientX - GRID_SIZE / 2;
       const y = e.clientY - GRID_SIZE / 2;
       activePiece.style.position = "absolute";
-      console.log(chessboard);
 
       // if x is less then minimum amount
       if (x < minX) {

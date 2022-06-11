@@ -71,26 +71,102 @@ export default class Referee {
       const specialRow = team === TeamType.OUR ? 1 : 6;
       const pawnDirection = team === TeamType.OUR ? 1 : -1;
 
-      if (initialPosition.x === desiredPosition.x && initialPosition.y === specialRow && desiredPosition.y - initialPosition.y === 2 * pawnDirection) {
+      if (
+        initialPosition.x === desiredPosition.x &&
+        initialPosition.y === specialRow &&
+        desiredPosition.y - initialPosition.y === 2 * pawnDirection
+      ) {
         if (
-          !this.tileIsOccupied(desiredPosition.x, desiredPosition.y, boardState) &&
-          !this.tileIsOccupied(desiredPosition.x, desiredPosition.y - pawnDirection, boardState)
+          !this.tileIsOccupied(
+            desiredPosition.x,
+            desiredPosition.y,
+            boardState
+          ) &&
+          !this.tileIsOccupied(
+            desiredPosition.x,
+            desiredPosition.y - pawnDirection,
+            boardState
+          )
         ) {
           return true;
         }
-      } else if (initialPosition.x === desiredPosition.x && desiredPosition.y - initialPosition.y === pawnDirection) {
-        if (!this.tileIsOccupied(desiredPosition.x, desiredPosition.y, boardState)) {
+      } else if (
+        initialPosition.x === desiredPosition.x &&
+        desiredPosition.y - initialPosition.y === pawnDirection
+      ) {
+        if (
+          !this.tileIsOccupied(desiredPosition.x, desiredPosition.y, boardState)
+        ) {
           return true;
         }
       }
       //ATTACK LOGIC
-      else if (desiredPosition.x - initialPosition.x === -1 && desiredPosition.y - initialPosition.y === pawnDirection) {
-        if (this.tileIsOccupiedByOpp(desiredPosition.x, desiredPosition.y, boardState, team)) {
+      else if (
+        desiredPosition.x - initialPosition.x === -1 &&
+        desiredPosition.y - initialPosition.y === pawnDirection
+      ) {
+        if (
+          this.tileIsOccupiedByOpp(
+            desiredPosition.x,
+            desiredPosition.y,
+            boardState,
+            team
+          )
+        ) {
           return true;
         }
-      } else if (desiredPosition.x - initialPosition.x === 1 && desiredPosition.y - initialPosition.y === pawnDirection) {
-        if (this.tileIsOccupiedByOpp(desiredPosition.x, desiredPosition.y, boardState, team)) {
+      } else if (
+        desiredPosition.x - initialPosition.x === 1 &&
+        desiredPosition.y - initialPosition.y === pawnDirection
+      ) {
+        if (
+          this.tileIsOccupiedByOpp(
+            desiredPosition.x,
+            desiredPosition.y,
+            boardState,
+            team
+          )
+        ) {
           return true;
+        }
+      }
+    } else if (type === PieceType.KNIGHT) {
+      // console.log("knight");
+      // MOVING LOGIC FOR KNIGHT
+      // 8 DIFFERENT MOVING PATTERNS
+
+      // TOP LINE
+      if (desiredPosition.y - initialPosition.y === 2) {
+        if (desiredPosition.x - initialPosition.x === -1) {
+          console.log("top-left ");
+        } else if (desiredPosition.x - initialPosition.x === 1) {
+          console.log("top-right ");
+        }
+      }
+      // BOTTOM LINE
+      if (desiredPosition.y - initialPosition.y === -2) {
+        if (desiredPosition.x - initialPosition.x === -1) {
+          console.log("bottom left line knight");
+        } else if (desiredPosition.x - initialPosition.x === 1) {
+          console.log("bottom right line knight");
+        }
+      }
+
+      // RIGHT LINE
+      if (desiredPosition.x - initialPosition.x === -2) {
+        if (desiredPosition.y - initialPosition.y === 1) {
+          console.log("top right  line ");
+        } else if (desiredPosition.y - initialPosition.y === -1) {
+          console.log("bottom right line ");
+        }
+      }
+
+      // LEFT LINE
+      if (desiredPosition.x - initialPosition.x === -2) {
+        if (desiredPosition.y - initialPosition.y === 1) {
+          console.log("left-top");
+        } if (desiredPosition.y - initialPosition.y === -1) {
+          console.log("left-bottom ");
         }
       }
     }
