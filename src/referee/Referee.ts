@@ -1,14 +1,10 @@
-import {
-  Piece,
-  PieceType,
-  TeamType,
-} from "./../Constants";
+import { Piece, PieceType, TeamType, Position } from "./../Constants";
 
 export default class Referee {
   tileIsOccupied(x: number, y: number, boardState: Piece[]) {
-    console.log("tile is occupied");
-
-    const piece = boardState.find((p) => p.position.x === x && p.position.y === y);
+    const piece = boardState.find(
+      (p) => p.position.x === x && p.position.y === y
+    );
 
     if (piece) {
       return true;
@@ -34,21 +30,25 @@ export default class Referee {
   }
 
   isAppasentMove = (
-    px: number,
-    py: number,
-    x: number,
-    y: number,
+    initialPosition: Position,
+    desiredPosition: Position,
+
     type: PieceType,
     team: TeamType,
     boardState: Piece[]
   ) => {
     const pawnDirection = team === TeamType.OUR ? 1 : -1;
     if (type === PieceType.PAWN) {
-      if ((x - px === -1 || x - px === 1) && y - py === pawnDirection) {
-        console.log("bottom - or upper left");
-        console.log("bottom - or upper right");
+      if (
+        (desiredPosition.x - initialPosition.x === -1 ||
+          desiredPosition.x - initialPosition.x === 1) &&
+        desiredPosition.y - initialPosition.y === pawnDirection
+      ) {
         const piece = boardState.find(
-          (p) => p.position.x === x && p.position.y === y - pawnDirection && p.enPassent
+          (p) =>
+            p.position.x === desiredPosition.x &&
+            p.position.y === desiredPosition.y - pawnDirection &&
+            p.enPassent
         );
         if (piece) {
           return true;
@@ -56,21 +56,12 @@ export default class Referee {
       }
     }
 
-    // if the attacking piece is a pawn
-    // upper left / upper right || bottom left / bottom right
-    // if a piece under / above the attacked tile
-    // if the attacked piece has made a appasent move in the previous turn
-
-    // put piece in correct position
-    // remove enpassant piece
     return false;
   };
 
   isValidMove(
-    px: number,
-    py: number,
-    x: number,
-    y: number,
+    initialPosition: Position,
+    desiredPosition: Position,
     type: PieceType,
     team: TeamType,
     boardState: Piece[]
@@ -80,27 +71,25 @@ export default class Referee {
       const specialRow = team === TeamType.OUR ? 1 : 6;
       const pawnDirection = team === TeamType.OUR ? 1 : -1;
 
-      if (px === x && py === specialRow && y - py === 2 * pawnDirection) {
+      if (initialPosition.x === desiredPosition.x && initialPosition.y === specialRow && desiredPosition.y - initialPosition.y === 2 * pawnDirection) {
         if (
-          !this.tileIsOccupied(x, y, boardState) &&
-          !this.tileIsOccupied(x, y - pawnDirection, boardState)
+          !this.tileIsOccupied(desiredPosition.x, desiredPosition.y, boardState) &&
+          !this.tileIsOccupied(desiredPosition.x, desiredPosition.y - pawnDirection, boardState)
         ) {
           return true;
         }
-      } else if (px === x && y - py === pawnDirection) {
-        if (!this.tileIsOccupied(x, y, boardState)) {
+      } else if (initialPosition.x === desiredPosition.x && desiredPosition.y - initialPosition.y === pawnDirection) {
+        if (!this.tileIsOccupied(desiredPosition.x, desiredPosition.y, boardState)) {
           return true;
         }
       }
       //ATTACK LOGIC
-      else if (x - px === -1 && y - py === pawnDirection) {
-        console.log("bottom - or upper left");
-        if (this.tileIsOccupiedByOpp(x, y, boardState, team)) {
+      else if (desiredPosition.x - initialPosition.x === -1 && desiredPosition.y - initialPosition.y === pawnDirection) {
+        if (this.tileIsOccupiedByOpp(desiredPosition.x, desiredPosition.y, boardState, team)) {
           return true;
         }
-      } else if (x - px === 1 && y - py === pawnDirection) {
-        console.log("bottom - or upper right");
-        if (this.tileIsOccupiedByOpp(x, y, boardState, team)) {
+      } else if (desiredPosition.x - initialPosition.x === 1 && desiredPosition.y - initialPosition.y === pawnDirection) {
+        if (this.tileIsOccupiedByOpp(desiredPosition.x, desiredPosition.y, boardState, team)) {
           return true;
         }
       }
