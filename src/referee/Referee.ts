@@ -157,23 +157,19 @@ export default class Referee {
       }
     } else if (type === PieceType.BISHOP) {
       // MOVEMENT
-      for (let i = -1; i < 2; i += 2) {
-        if (
-          desiredPosition.x - initialPosition.x === 1 * i &&
-          desiredPosition.y - initialPosition.y === 1 
-        ) {
-          console.log("trying right/left top");
-        } else if (
-          desiredPosition.x - initialPosition.x === 2 * i &&
-          desiredPosition.y - initialPosition.y === 2 
-        ) {
-          console.log("trying right/left top x 2");
-        } else if (
-          desiredPosition.x - initialPosition.x === 3 * i &&
-          desiredPosition.y - initialPosition.y === 3 
-        ) {
-          console.log("trying right/left top x 3");
-          // ATTACK
+      // UPPER RIGHT
+      for (let i = 1; i < 8; i++) {
+        if(desiredPosition.x - initialPosition.x === i && desiredPosition.y - initialPosition.y === i){
+          console.log(`Moving ${i} squares`)
+          break;
+        }
+      }
+      // UPPER LEFT
+      for (let i =0; i < 8; i++) {
+        if (desiredPosition.x -initialPosition.x === -i && desiredPosition.y - initialPosition.y ===i) {
+          console.log(`Moving ${i} squares`)
+          break;
+          
         }
       }
       return false;
