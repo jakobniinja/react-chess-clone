@@ -172,6 +172,24 @@ export default class Referee {
           
         }
       }
+
+      // BOTTOM LEFT
+      for (let i =0; i < 8; i++) {
+        if (desiredPosition.x -initialPosition.x === -i && desiredPosition.y - initialPosition.y ===-i) {
+          console.log(`Moving ${i} squares`)
+          break;
+          
+        }
+      }
+
+      // BOTTOM RIGHT
+      for (let i =0; i < 8; i++) {
+        if (desiredPosition.x -initialPosition.x === i && desiredPosition.y - initialPosition.y ===-i) {
+          console.log(`Moving ${i} squares`)
+          break;
+          
+        }
+      }
       return false;
     }
   }
