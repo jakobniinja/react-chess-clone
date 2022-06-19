@@ -186,8 +186,6 @@ export default class Referee {
           }
         }
 
-        // UPPER RIGHT
-
         // UPPER LEFT
         if (
           desiredPosition.x < initialPosition.x &&
@@ -197,16 +195,22 @@ export default class Referee {
             x: initialPosition.x - i,
             y: initialPosition.y + i,
           };
-          if (this.tileIsOccupied(passedPosition, boardState)) {
-            console.log("illegal move");
-            break;
+          // check if the tile is the destination tile
+          if (
+            passedPosition.x === desiredPosition.x &&
+            passedPosition.y === desiredPosition.y
+          ) {
+            // dealing with the destination tile
+            if (
+              this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
+            ) {
+              return true;
+            }
+          } else {
+            if (this.tileIsOccupied(passedPosition, boardState)) {
+              break;
+            }
           }
-        }
-        if (
-          desiredPosition.x - initialPosition.x === -i &&
-          desiredPosition.y - initialPosition.y === i
-        ) {
-          return true;
         }
         // BOTTOM LEFT
         if (
@@ -217,17 +221,26 @@ export default class Referee {
             x: initialPosition.x - i,
             y: initialPosition.y - i,
           };
-          if (this.tileIsOccupied(passedPosition, boardState)) {
-            console.log("illegal move");
-            break;
+
+          // check if the tile is the destination tile
+          if (
+            passedPosition.x === desiredPosition.x &&
+            passedPosition.y === desiredPosition.y
+          ) {
+            // dealing with destination tile
+            if (
+              this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
+            ) {
+              return true;
+            }
+          } else {
+            // dealing with destination tile
+            if (this.tileIsOccupied(passedPosition, boardState)) {
+              break;
+            }
           }
         }
-        if (
-          desiredPosition.x - initialPosition.x === -i &&
-          desiredPosition.y - initialPosition.y === -i
-        ) {
-          return true;
-        }
+
         // BOTTOM RIGHT
         if (
           desiredPosition.x > initialPosition.x &&
