@@ -271,6 +271,46 @@ export default class Referee {
       }
 
       return false;
+    } else if (type === PieceType.ROOK) {
+      if (initialPosition.x === desiredPosition.x) {
+        console.log("vertical move");
+
+        for (let i = 1; i < 8; i++) {
+          let multiplier = desiredPosition.y < initialPosition.y ? -1 : 1;
+          let passedPosition: Position = {
+            x: initialPosition.x,
+            y: initialPosition.y + i * multiplier,
+          };
+          console.log(passedPosition);
+          if (
+            passedPosition.x === desiredPosition.x &&
+            passedPosition.y === desiredPosition.y
+          ) {
+            console.log("arrived");
+            break;
+          }
+        }
+      }
+
+      if (initialPosition.y === desiredPosition.y) {
+        console.log("horizontal move");
+        for (let i = 1; i < 8; i++) {
+          let multiplier = desiredPosition.x < initialPosition.x ? -1 : 1;
+          let passedPosition: Position = {
+            x: initialPosition.x + multiplier * i,
+            y: initialPosition.y,
+          };
+
+          console.log(passedPosition)
+          if (
+            passedPosition.x === desiredPosition.x &&
+            passedPosition.y === desiredPosition.y
+          ) {
+            console.log("arrived");
+            break;
+          }
+        }
+      }
     }
   }
 }
