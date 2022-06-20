@@ -1,3 +1,4 @@
+import { createTypeReferenceDirectiveResolutionCache } from "typescript";
 import {
   Piece,
   PieceType,
@@ -281,13 +282,19 @@ export default class Referee {
             x: initialPosition.x,
             y: initialPosition.y + i * multiplier,
           };
-          console.log(passedPosition);
           if (
             passedPosition.x === desiredPosition.x &&
             passedPosition.y === desiredPosition.y
           ) {
-            console.log("arrived");
-            break;
+            if (
+              this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
+            ) {
+              return true;
+            }
+          } else {
+            if (this.tileIsOccupied(passedPosition, boardState)) {
+              break;
+            }
           }
         }
       }
@@ -301,13 +308,19 @@ export default class Referee {
             y: initialPosition.y,
           };
 
-          console.log(passedPosition)
           if (
             passedPosition.x === desiredPosition.x &&
             passedPosition.y === desiredPosition.y
           ) {
-            console.log("arrived");
-            break;
+            if (
+              this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
+            ) {
+              return true;
+            }
+          } else {
+            if (this.tileIsOccupied(passedPosition, boardState)) {
+              break;
+            }
           }
         }
       }
