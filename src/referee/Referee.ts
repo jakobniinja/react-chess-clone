@@ -1,4 +1,3 @@
-import { createTypeReferenceDirectiveResolutionCache } from "typescript";
 import {
   Piece,
   PieceType,
@@ -10,12 +9,12 @@ import {
 export default class Referee {
   tileIsEmptyOrOccupiedByOpp(
     position: Position,
-    boarstate: Piece[],
+    boardstate: Piece[],
     team: TeamType
   ) {
     return (
-      !this.tileIsOccupied(position, boarstate) ||
-      this.tileIsOccupiedByOpp(position, boarstate, team)
+      !this.tileIsOccupied(position, boardstate) ||
+      this.tileIsOccupiedByOpp(position, boardstate, team)
     );
   }
   tileIsOccupied(position: Position, boardState: Piece[]) {
@@ -73,6 +72,266 @@ export default class Referee {
     return false;
   };
 
+  pawnMove(
+    initialPosition: Position,
+    desiredPosition: Position,
+    team: TeamType,
+    boardState: Piece[]
+  ): boolean {
+    const specialRow = team === TeamType.OUR ? 1 : 6;
+    const pawnDirection = team === TeamType.OUR ? 1 : -1;
+
+    if (
+      initialPosition.x === desiredPosition.x &&
+      initialPosition.y === specialRow &&
+      desiredPosition.y - initialPosition.y === 2 * pawnDirection
+    ) {
+      if (
+        !this.tileIsOccupied(desiredPosition, boardState) &&
+        !this.tileIsOccupied(
+          { x: desiredPosition.x, y: desiredPosition.y - pawnDirection },
+          boardState
+        )
+      ) {
+        return true;
+      }
+    } else if (
+      initialPosition.x === desiredPosition.x &&
+      desiredPosition.y - initialPosition.y === pawnDirection
+    ) {
+      if (!this.tileIsOccupied(desiredPosition, boardState)) {
+        return true;
+      }
+    }
+    //ATTACK LOGIC
+    else if (
+      desiredPosition.x - initialPosition.x === -1 &&
+      desiredPosition.y - initialPosition.y === pawnDirection
+    ) {
+      if (this.tileIsOccupiedByOpp(desiredPosition, boardState, team)) {
+        return true;
+      }
+    } else if (
+      desiredPosition.x - initialPosition.x === 1 &&
+      desiredPosition.y - initialPosition.y === pawnDirection
+    ) {
+      if (this.tileIsOccupiedByOpp(desiredPosition, boardState, team)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  knightMove(
+    initialPosition: Position,
+    desiredPosition: Position,
+    team: TeamType,
+    boardState: Piece[]
+  ): boolean {
+    for (let i = -1; i < 2; i += 2) {
+      for (let j = -1; j < 2; j += 2) {
+        // TOP AND BOTTOM MOVEMENTS
+        if (desiredPosition.y - initialPosition.y === 2 * i) {
+          if (desiredPosition.x - initialPosition.x === j) {
+            if (
+              this.tileIsEmptyOrOccupiedByOpp(desiredPosition, boardState, team)
+            ) {
+              return true;
+            }
+          }
+        }
+        // RIGHT AND LEFT MOVEMENTS
+        if (desiredPosition.x - initialPosition.x === 2 * i) {
+          if (desiredPosition.y - initialPosition.y === j) {
+            if (
+              this.tileIsEmptyOrOccupiedByOpp(desiredPosition, boardState, team)
+            ) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  bishopMove(
+    initialPosition: Position,
+    desiredPosition: Position,
+    team: TeamType,
+    boardState: Piece[]
+  ): boolean {
+    for (let i = 1; i < 8; i++) {
+      if (
+        desiredPosition.x > initialPosition.x &&
+        desiredPosition.y > initialPosition.y
+      ) {
+        let passedPosition: Position = {
+          x: initialPosition.x + i,
+          y: initialPosition.y + i,
+        };
+        // check if the tile is the destination tile
+        if (
+          passedPosition.x === desiredPosition.x &&
+          passedPosition.y === desiredPosition.y
+        ) {
+          // dealing with destination tile
+          if (
+            this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
+          ) {
+            return true;
+          }
+        } else {
+          // dealing with passing tile
+          if (this.tileIsOccupied(passedPosition, boardState)) {
+            break;
+          }
+        }
+      }
+
+      // UPPER LEFT
+      if (
+        desiredPosition.x < initialPosition.x &&
+        desiredPosition.y > initialPosition.y
+      ) {
+        let passedPosition: Position = {
+          x: initialPosition.x - i,
+          y: initialPosition.y + i,
+        };
+        // check if the tile is the destination tile
+        if (
+          passedPosition.x === desiredPosition.x &&
+          passedPosition.y === desiredPosition.y
+        ) {
+          // dealing with the destination tile
+          if (
+            this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
+          ) {
+            return true;
+          }
+        } else {
+          if (this.tileIsOccupied(passedPosition, boardState)) {
+            break;
+          }
+        }
+      }
+      // BOTTOM LEFT
+      if (
+        desiredPosition.x < initialPosition.x &&
+        desiredPosition.y < initialPosition.y
+      ) {
+        let passedPosition: Position = {
+          x: initialPosition.x - i,
+          y: initialPosition.y - i,
+        };
+
+        // check if the tile is the destination tile
+        if (
+          passedPosition.x === desiredPosition.x &&
+          passedPosition.y === desiredPosition.y
+        ) {
+          // dealing with destination tile
+          if (
+            this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
+          ) {
+            return true;
+          }
+        } else {
+          // dealing with destination tile
+          if (this.tileIsOccupied(passedPosition, boardState)) {
+            break;
+          }
+        }
+      }
+
+      // BOTTOM RIGHT
+      if (
+        desiredPosition.x > initialPosition.x &&
+        desiredPosition.y < initialPosition.y
+      ) {
+        let passedPosition: Position = {
+          x: initialPosition.x + i,
+          y: initialPosition.y - i,
+        };
+        // check if the tile is the destination tile
+        if (
+          passedPosition.x === desiredPosition.x &&
+          passedPosition.y === desiredPosition.y
+        ) {
+          // dealing with destination tile
+          if (
+            this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
+          ) {
+            return true;
+          }
+        } else {
+          // dealing with destination tile
+          if (this.tileIsOccupied(passedPosition, boardState)) {
+            break;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+  rookMove(
+    initialPosition: Position,
+    desiredPosition: Position,
+    team: TeamType,
+    boardState: Piece[]
+  ): boolean {
+    if (initialPosition.x === desiredPosition.x) {
+      for (let i = 1; i < 8; i++) {
+        let multiplier = desiredPosition.y < initialPosition.y ? -1 : 1;
+        let passedPosition: Position = {
+          x: initialPosition.x,
+          y: initialPosition.y + i * multiplier,
+        };
+        if (
+          passedPosition.x === desiredPosition.x &&
+          passedPosition.y === desiredPosition.y
+        ) {
+          if (
+            this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
+          ) {
+            return true;
+          }
+        } else {
+          if (this.tileIsOccupied(passedPosition, boardState)) {
+            break;
+          }
+        }
+      }
+    }
+
+    if (initialPosition.y === desiredPosition.y) {
+      for (let i = 1; i < 8; i++) {
+        let multiplier = desiredPosition.x < initialPosition.x ? -1 : 1;
+        let passedPosition: Position = {
+          x: initialPosition.x + multiplier * i,
+          y: initialPosition.y,
+        };
+
+        if (
+          passedPosition.x === desiredPosition.x &&
+          passedPosition.y === desiredPosition.y
+        ) {
+          if (
+            this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
+          ) {
+            return true;
+          }
+        } else {
+          if (this.tileIsOccupied(passedPosition, boardState)) {
+            break;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
   isValidMove(
     initialPosition: Position,
     desiredPosition: Position,
@@ -81,249 +340,47 @@ export default class Referee {
     boardState: Piece[]
   ) {
     // MOVEMENT LOGIC
-    if (type === PieceType.PAWN) {
-      const specialRow = team === TeamType.OUR ? 1 : 6;
-      const pawnDirection = team === TeamType.OUR ? 1 : -1;
+    let validMove = false;
+    switch (type) {
+      case PieceType.PAWN:
+        validMove = this.pawnMove(
+          initialPosition,
+          desiredPosition,
+          team,
+          boardState
+        );
 
-      if (
-        initialPosition.x === desiredPosition.x &&
-        initialPosition.y === specialRow &&
-        desiredPosition.y - initialPosition.y === 2 * pawnDirection
-      ) {
-        if (
-          !this.tileIsOccupied(desiredPosition, boardState) &&
-          !this.tileIsOccupied(
-            { x: desiredPosition.x, y: desiredPosition.y - pawnDirection },
-            boardState
-          )
-        ) {
-          return true;
-        }
-      } else if (
-        initialPosition.x === desiredPosition.x &&
-        desiredPosition.y - initialPosition.y === pawnDirection
-      ) {
-        if (!this.tileIsOccupied(desiredPosition, boardState)) {
-          return true;
-        }
-      }
-      //ATTACK LOGIC
-      else if (
-        desiredPosition.x - initialPosition.x === -1 &&
-        desiredPosition.y - initialPosition.y === pawnDirection
-      ) {
-        if (this.tileIsOccupiedByOpp(desiredPosition, boardState, team)) {
-          return true;
-        }
-      } else if (
-        desiredPosition.x - initialPosition.x === 1 &&
-        desiredPosition.y - initialPosition.y === pawnDirection
-      ) {
-        if (this.tileIsOccupiedByOpp(desiredPosition, boardState, team)) {
-          return true;
-        }
-      }
-    } else if (type === PieceType.KNIGHT) {
-      for (let i = -1; i < 2; i += 2) {
-        for (let j = -1; j < 2; j += 2) {
-          // TOP AND BOTTOM MOVEMENTS
-          if (desiredPosition.y - initialPosition.y === 2 * i) {
-            if (desiredPosition.x - initialPosition.x === j) {
-              if (
-                this.tileIsEmptyOrOccupiedByOpp(
-                  desiredPosition,
-                  boardState,
-                  team
-                )
-              ) {
-                return true;
-              }
-            }
-          }
-          // RIGHT AND LEFT MOVEMENTS
-          if (desiredPosition.x - initialPosition.x === 2 * i) {
-            if (desiredPosition.y - initialPosition.y === j) {
-              if (
-                this.tileIsEmptyOrOccupiedByOpp(
-                  desiredPosition,
-                  boardState,
-                  team
-                )
-              ) {
-                return true;
-              }
-            }
-          }
-        }
-      }
-    } else if (type === PieceType.BISHOP) {
-      // MOVEMENT
+        break;
+      case PieceType.KNIGHT:
+        validMove = this.knightMove(
+          initialPosition,
+          desiredPosition,
+          team,
+          boardState
+        );
+        break;
 
-      for (let i = 1; i < 8; i++) {
-        if (
-          desiredPosition.x > initialPosition.x &&
-          desiredPosition.y > initialPosition.y
-        ) {
-          let passedPosition: Position = {
-            x: initialPosition.x + i,
-            y: initialPosition.y + i,
-          };
-          // check if the tile is the destination tile
-          if (
-            passedPosition.x === desiredPosition.x &&
-            passedPosition.y === desiredPosition.y
-          ) {
-            // dealing with destination tile
-            if (
-              this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
-            ) {
-              return true;
-            }
-          } else {
-            // dealing with passing tile
-            if (this.tileIsOccupied(passedPosition, boardState)) {
-              break;
-            }
-          }
-        }
+      case PieceType.BISHOP:
+        validMove = this.bishopMove(
+          initialPosition,
+          desiredPosition,
+          team,
+          boardState
+        );
+        break;
 
-        // UPPER LEFT
-        if (
-          desiredPosition.x < initialPosition.x &&
-          desiredPosition.y > initialPosition.y
-        ) {
-          let passedPosition: Position = {
-            x: initialPosition.x - i,
-            y: initialPosition.y + i,
-          };
-          // check if the tile is the destination tile
-          if (
-            passedPosition.x === desiredPosition.x &&
-            passedPosition.y === desiredPosition.y
-          ) {
-            // dealing with the destination tile
-            if (
-              this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
-            ) {
-              return true;
-            }
-          } else {
-            if (this.tileIsOccupied(passedPosition, boardState)) {
-              break;
-            }
-          }
-        }
-        // BOTTOM LEFT
-        if (
-          desiredPosition.x < initialPosition.x &&
-          desiredPosition.y < initialPosition.y
-        ) {
-          let passedPosition: Position = {
-            x: initialPosition.x - i,
-            y: initialPosition.y - i,
-          };
-
-          // check if the tile is the destination tile
-          if (
-            passedPosition.x === desiredPosition.x &&
-            passedPosition.y === desiredPosition.y
-          ) {
-            // dealing with destination tile
-            if (
-              this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
-            ) {
-              return true;
-            }
-          } else {
-            // dealing with destination tile
-            if (this.tileIsOccupied(passedPosition, boardState)) {
-              break;
-            }
-          }
-        }
-
-        // BOTTOM RIGHT
-        if (
-          desiredPosition.x > initialPosition.x &&
-          desiredPosition.y < initialPosition.y
-        ) {
-          let passedPosition: Position = {
-            x: initialPosition.x + i,
-            y: initialPosition.y - i,
-          };
-          // check if the tile is the destination tile
-          if (
-            passedPosition.x === desiredPosition.x &&
-            passedPosition.y === desiredPosition.y
-          ) {
-            // dealing with destination tile
-            if (
-              this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
-            ) {
-              return true;
-            }
-          } else {
-            // dealing with destination tile
-            if (this.tileIsOccupied(passedPosition, boardState)) {
-              break;
-            }
-          }
-        }
-      }
-
-      return false;
-    } else if (type === PieceType.ROOK) {
-      if (initialPosition.x === desiredPosition.x) {
-        console.log("vertical move");
-
-        for (let i = 1; i < 8; i++) {
-          let multiplier = desiredPosition.y < initialPosition.y ? -1 : 1;
-          let passedPosition: Position = {
-            x: initialPosition.x,
-            y: initialPosition.y + i * multiplier,
-          };
-          if (
-            passedPosition.x === desiredPosition.x &&
-            passedPosition.y === desiredPosition.y
-          ) {
-            if (
-              this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
-            ) {
-              return true;
-            }
-          } else {
-            if (this.tileIsOccupied(passedPosition, boardState)) {
-              break;
-            }
-          }
-        }
-      }
-
-      if (initialPosition.y === desiredPosition.y) {
-        console.log("horizontal move");
-        for (let i = 1; i < 8; i++) {
-          let multiplier = desiredPosition.x < initialPosition.x ? -1 : 1;
-          let passedPosition: Position = {
-            x: initialPosition.x + multiplier * i,
-            y: initialPosition.y,
-          };
-
-          if (
-            passedPosition.x === desiredPosition.x &&
-            passedPosition.y === desiredPosition.y
-          ) {
-            if (
-              this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
-            ) {
-              return true;
-            }
-          } else {
-            if (this.tileIsOccupied(passedPosition, boardState)) {
-              break;
-            }
-          }
-        }
-      }
+      case PieceType.ROOK:
+        validMove = this.rookMove(
+          initialPosition,
+          desiredPosition,
+          team,
+          boardState
+        );
+        break;
+      default:
+        console.log("unknown");
+        break;
     }
+    return validMove;
   }
 }
