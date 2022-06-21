@@ -331,6 +331,67 @@ export default class Referee {
     }
     return false;
   }
+  queenMove(
+    initialPosition: Position,
+    desiredPosition: Position,
+    team: TeamType,
+    boardState: Piece[]
+  ): boolean {
+    // top
+    if (desiredPosition.y > initialPosition.y  && desiredPosition.x === initialPosition.x ) {
+      console.log("top");
+    }
+
+    // right
+    if (desiredPosition.x > initialPosition.x && desiredPosition.y === initialPosition.y  ) {
+      console.log("right");
+    }
+
+    // bottom
+    if (desiredPosition.y < initialPosition.y && desiredPosition.x === initialPosition.x  ) {
+      console.log("bottom");
+    }
+
+    // left
+    if (desiredPosition.x < initialPosition.x && desiredPosition.y === initialPosition.y  ) {
+      console.log("left");
+    }
+
+
+    // top-right
+    if (desiredPosition.x > initialPosition.x && desiredPosition.y > initialPosition.y) {
+      console.log("top-right")
+      
+    }
+
+    // bottom-right
+    if (desiredPosition.x > initialPosition.x && desiredPosition.y < initialPosition.y) {
+      console.log("bottom-right")
+    }
+
+
+    // bottom-left
+    if (desiredPosition.x < initialPosition.x && desiredPosition.y < initialPosition.y) {
+      console.log("bottom-left")
+    }
+
+    // top-left
+
+    if (desiredPosition.x < initialPosition.x && desiredPosition.y > initialPosition.y) {
+      console.log("top-left")
+    }
+
+    return false;
+  }
+
+  kingMove(
+    initialPosition: Position,
+    desiredPosition: Position,
+    team: TeamType,
+    boardState: Piece[]
+  ): boolean {
+    return false;
+  }
 
   isValidMove(
     initialPosition: Position,
@@ -371,6 +432,26 @@ export default class Referee {
 
       case PieceType.ROOK:
         validMove = this.rookMove(
+          initialPosition,
+          desiredPosition,
+          team,
+          boardState
+        );
+        break;
+
+      case PieceType.QUEEN:
+        validMove = this.queenMove(
+          initialPosition,
+          desiredPosition,
+          team,
+          boardState
+        );
+
+        break;
+      case PieceType.KING:
+        console.log("king");
+
+        validMove = this.kingMove(
           initialPosition,
           desiredPosition,
           team,
