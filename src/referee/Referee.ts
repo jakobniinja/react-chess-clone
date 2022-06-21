@@ -337,50 +337,89 @@ export default class Referee {
     team: TeamType,
     boardState: Piece[]
   ): boolean {
-    // top
-    if (desiredPosition.y > initialPosition.y  && desiredPosition.x === initialPosition.x ) {
-      console.log("top");
+    for (let i = 1; i < 8; i++) {
+      // top
+      if (
+        desiredPosition.y > initialPosition.y &&
+        desiredPosition.x === initialPosition.x
+      ) {
+        let passedPosition: Position = {
+          x: initialPosition.x,
+          y: initialPosition.y + i,
+        };
+        if (
+          passedPosition.x === desiredPosition.x &&
+          passedPosition.y === desiredPosition.y
+        ) {
+          if (
+            this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
+          ) {
+            return true;
+          }
+        } else {
+          if (this.tileIsOccupied(passedPosition, boardState)) {
+            break;
+          }
+        }
+      }
+
+      // right
+      if (
+        desiredPosition.x > initialPosition.x &&
+        desiredPosition.y === initialPosition.y
+      ) {
+        console.log("right");
+      }
+
+      // bottom
+      if (
+        desiredPosition.y < initialPosition.y &&
+        desiredPosition.x === initialPosition.x
+      ) {
+        console.log("bottom");
+      }
+
+      // left
+      if (
+        desiredPosition.x < initialPosition.x &&
+        desiredPosition.y === initialPosition.y
+      ) {
+        console.log("left");
+      }
+
+      // top-right
+      if (
+        desiredPosition.x > initialPosition.x &&
+        desiredPosition.y > initialPosition.y
+      ) {
+        console.log("top-right");
+      }
+
+      // bottom-right
+      if (
+        desiredPosition.x > initialPosition.x &&
+        desiredPosition.y < initialPosition.y
+      ) {
+        console.log("bottom-right");
+      }
+
+      // bottom-left
+      if (
+        desiredPosition.x < initialPosition.x &&
+        desiredPosition.y < initialPosition.y
+      ) {
+        console.log("bottom-left");
+      }
+
+      // top-left
+
+      if (
+        desiredPosition.x < initialPosition.x &&
+        desiredPosition.y > initialPosition.y
+      ) {
+        console.log("top-left");
+      }
     }
-
-    // right
-    if (desiredPosition.x > initialPosition.x && desiredPosition.y === initialPosition.y  ) {
-      console.log("right");
-    }
-
-    // bottom
-    if (desiredPosition.y < initialPosition.y && desiredPosition.x === initialPosition.x  ) {
-      console.log("bottom");
-    }
-
-    // left
-    if (desiredPosition.x < initialPosition.x && desiredPosition.y === initialPosition.y  ) {
-      console.log("left");
-    }
-
-
-    // top-right
-    if (desiredPosition.x > initialPosition.x && desiredPosition.y > initialPosition.y) {
-      console.log("top-right")
-      
-    }
-
-    // bottom-right
-    if (desiredPosition.x > initialPosition.x && desiredPosition.y < initialPosition.y) {
-      console.log("bottom-right")
-    }
-
-
-    // bottom-left
-    if (desiredPosition.x < initialPosition.x && desiredPosition.y < initialPosition.y) {
-      console.log("bottom-left")
-    }
-
-    // top-left
-
-    if (desiredPosition.x < initialPosition.x && desiredPosition.y > initialPosition.y) {
-      console.log("top-left")
-    }
-
     return false;
   }
 
