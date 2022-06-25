@@ -295,27 +295,9 @@ export default class Referee {
     boardState: Piece[]
   ): boolean {
     for (let i = 1; i < 8; i++) {
-
-
       // diagonal
-      let multiplierx; // = desiredPosition.x < initialPosition.x ? -1 : 1;
-      let multipliery;
-      //multipliery  let multipliery ;
-      
-      if (desiredPosition.x < initialPosition.x) {
-        multiplierx = -1;
-      } else if (desiredPosition.x > initialPosition.x) {
-        multiplierx = 1;
-      } else {
-        multiplierx = 0;
-      }
-      if (desiredPosition.y < initialPosition.y) {
-        multipliery = -1;
-      } else if (desiredPosition.y > initialPosition.y) {
-        multipliery = 1;
-      } else {
-        multipliery = 0;
-      }
+      let multiplierx= ( desiredPosition.x  < initialPosition.x ) ? -1 :(desiredPosition.x > initialPosition.x)? 1 : 0
+      let multipliery = ( desiredPosition.y  < initialPosition.y ) ? -1 :(desiredPosition.y > initialPosition.y)? 1 : 0;
 
       let passedPosition: Position = {
         x: initialPosition.x + i * multiplierx,
@@ -347,8 +329,42 @@ export default class Referee {
     team: TeamType,
     boardState: Piece[]
   ): boolean {
+    for (let i = 1; i < 2; i++) {
+      // diagonal
+      let multiplierx= ( desiredPosition.x  < initialPosition.x ) ? -1 :(desiredPosition.x > initialPosition.x)? 1 : 0
+      let multipliery = ( desiredPosition.y  < initialPosition.y ) ? -1 :(desiredPosition.y > initialPosition.y)? 1 : 0;
+
+      let passedPosition: Position = {
+        x: initialPosition.x + i * multiplierx,
+        y: initialPosition.y + i * multipliery,
+      };
+
+      // i * -1 - left
+
+      // i * 1 - right
+
+      // i * 0 - middle
+
+      if (samePosition(passedPosition, desiredPosition)) {
+        if (this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)) {
+          return true;
+        }
+      } else {
+        if (this.tileIsOccupied(passedPosition, boardState)) {
+          break;
+        }
+      }
+    }
     return false;
   }
+
+  // TODO 
+  // PAWN PROMOTION
+  // prevent the king moving into danger
+  // add castling
+  // stalemate
+  // check 
+  // checkmate 
 
   isValidMove(
     initialPosition: Position,
@@ -406,14 +422,13 @@ export default class Referee {
 
         break;
       case PieceType.KING:
-        console.log("king");
-
         validMove = this.kingMove(
           initialPosition,
           desiredPosition,
           team,
           boardState
         );
+
         break;
       default:
         console.log("unknown");
