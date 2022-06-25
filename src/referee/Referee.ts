@@ -1,3 +1,4 @@
+import { pawnMove } from './rules/PawnRules';
 import {
   Piece,
   PieceType,
@@ -72,55 +73,7 @@ export default class Referee {
     return false;
   };
 
-  pawnMove(
-    initialPosition: Position,
-    desiredPosition: Position,
-    team: TeamType,
-    boardState: Piece[]
-  ): boolean {
-    const specialRow = team === TeamType.OUR ? 1 : 6;
-    const pawnDirection = team === TeamType.OUR ? 1 : -1;
-
-    if (
-      initialPosition.x === desiredPosition.x &&
-      initialPosition.y === specialRow &&
-      desiredPosition.y - initialPosition.y === 2 * pawnDirection
-    ) {
-      if (
-        !this.tileIsOccupied(desiredPosition, boardState) &&
-        !this.tileIsOccupied(
-          { x: desiredPosition.x, y: desiredPosition.y - pawnDirection },
-          boardState
-        )
-      ) {
-        return true;
-      }
-    } else if (
-      initialPosition.x === desiredPosition.x &&
-      desiredPosition.y - initialPosition.y === pawnDirection
-    ) {
-      if (!this.tileIsOccupied(desiredPosition, boardState)) {
-        return true;
-      }
-    }
-    //ATTACK LOGIC
-    else if (
-      desiredPosition.x - initialPosition.x === -1 &&
-      desiredPosition.y - initialPosition.y === pawnDirection
-    ) {
-      if (this.tileIsOccupiedByOpp(desiredPosition, boardState, team)) {
-        return true;
-      }
-    } else if (
-      desiredPosition.x - initialPosition.x === 1 &&
-      desiredPosition.y - initialPosition.y === pawnDirection
-    ) {
-      if (this.tileIsOccupiedByOpp(desiredPosition, boardState, team)) {
-        return true;
-      }
-    }
-    return false;
-  }
+  
   knightMove(
     initialPosition: Position,
     desiredPosition: Position,
@@ -377,7 +330,7 @@ export default class Referee {
     let validMove = false;
     switch (type) {
       case PieceType.PAWN:
-        validMove = this.pawnMove(
+        validMove = pawnMove(
           initialPosition,
           desiredPosition,
           team,
