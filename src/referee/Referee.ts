@@ -295,53 +295,39 @@ export default class Referee {
     boardState: Piece[]
   ): boolean {
     for (let i = 1; i < 8; i++) {
-      // vertical
-      if (desiredPosition.x === initialPosition.x) {
-        let multiplier = desiredPosition.y < initialPosition.y ? -1 : 1;
-        let passedPosition: Position = {
-          x: initialPosition.x,
-          y: initialPosition.y + i * multiplier,
-        };
-        if (samePosition(passedPosition, desiredPosition)) {
-          if (
-            this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
-          ) {
-            return true;
-          }
-        } else {
-          if (this.tileIsOccupied(passedPosition, boardState)) {
-            break;
-          }
-        }
-      }
 
-      // horizontal
-      if (desiredPosition.y === initialPosition.y) {
-        let multiplier = desiredPosition.x < initialPosition.x ? -1 : 1;
-        let passedPosition: Position = {
-          x: initialPosition.x + i * multiplier,
-          y: initialPosition.y,
-        };
-        if (samePosition(passedPosition, desiredPosition)) {
-          if (
-            this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)
-          ) {
-            return true;
-          }
-        } else {
-          if (this.tileIsOccupied(passedPosition, boardState)) {
-            break;
-          }
-        }
-      }
 
       // diagonal
-      let multiplierx = desiredPosition.x < initialPosition.x ? -1 : 1;
-      let multipliery = desiredPosition.y < initialPosition.y ? -1 : 1;
+      let multiplierx; // = desiredPosition.x < initialPosition.x ? -1 : 1;
+      let multipliery;
+      //multipliery  let multipliery ;
+      
+      if (desiredPosition.x < initialPosition.x) {
+        multiplierx = -1;
+      } else if (desiredPosition.x > initialPosition.x) {
+        multiplierx = 1;
+      } else {
+        multiplierx = 0;
+      }
+      if (desiredPosition.y < initialPosition.y) {
+        multipliery = -1;
+      } else if (desiredPosition.y > initialPosition.y) {
+        multipliery = 1;
+      } else {
+        multipliery = 0;
+      }
+
       let passedPosition: Position = {
         x: initialPosition.x + i * multiplierx,
         y: initialPosition.y + i * multipliery,
       };
+
+      // i * -1 - left
+
+      // i * 1 - right
+
+      // i * 0 - middle
+
       if (samePosition(passedPosition, desiredPosition)) {
         if (this.tileIsEmptyOrOccupiedByOpp(passedPosition, boardState, team)) {
           return true;
