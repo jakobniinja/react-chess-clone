@@ -1,11 +1,13 @@
 import {
   Piece,
-  PieceType, Position,
-  samePosition, TeamType
+  PieceType,
+  Position,
+  samePosition,
+  TeamType,
 } from "./../Constants";
-import { bishopMove } from './rules/BishopRules';
-import { tileIsOccupied, tileIsOccupiedByOpp } from './rules/GeneralRules';
-import { kingMove, knightMove, pawnMove, queenMove, rookMove } from './rules';
+import { bishopMove } from "./rules/BishopRules";
+import { tileIsOccupied, tileIsOccupiedByOpp } from "./rules/GeneralRules";
+import { kingMove, knightMove, pawnMove, queenMove, rookMove } from "./rules";
 
 export default class Referee {
   tileIsEmptyOrOccupiedByOpp(
@@ -73,20 +75,13 @@ export default class Referee {
     return false;
   };
 
-  
-
-  
-  
-
-  
-
-  // TODO 
+  // TODO
   // PAWN PROMOTION
   // prevent the king moving into danger
   // add castling
   // stalemate
-  // check 
-  // checkmate 
+  // check
+  // checkmate
 
   isValidMove(
     initialPosition: Position,

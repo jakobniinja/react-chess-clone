@@ -128,6 +128,7 @@ export default function Chessboard() {
           // UPDATE THE PIECE POSITION
           const updatedPieces = pieces.reduce((acc, i) => {
             if (samePosition(i.position, grabPosition)) {
+              console.log(`grabbed piece: ${grabPiece}`)
               i.enPassent =
                 Math.abs(grabPosition.y - y) === 2 && i.type === PieceType.PAWN;
 
@@ -135,6 +136,7 @@ export default function Chessboard() {
               i.position.y = y;
               acc.push(i);
             } else if (!samePosition(i.position, { x, y })) {
+                console.log(`not grabbed : ${i}`)
               if (i.type === PieceType.PAWN) {
                 i.enPassent = false;
               }
