@@ -6,6 +6,7 @@ import {
   Position,
   samePosition,
 } from "./../Constants";
+import { tileIsOccupied } from './rules/GeneralRules';
 
 export default class Referee {
   tileIsEmptyOrOccupiedByOpp(
@@ -14,7 +15,7 @@ export default class Referee {
     team: TeamType
   ) {
     return (
-      !this.tileIsOccupied(position, boardstate) ||
+      !tileIsOccupied(position, boardstate) ||
       this.tileIsOccupiedByOpp(position, boardstate, team)
     );
   }
@@ -133,7 +134,7 @@ export default class Referee {
           }
         } else {
           // dealing with passing tile
-          if (this.tileIsOccupied(passedPosition, boardState)) {
+          if (tileIsOccupied(passedPosition, boardState)) {
             break;
           }
         }
@@ -157,7 +158,7 @@ export default class Referee {
             return true;
           }
         } else {
-          if (this.tileIsOccupied(passedPosition, boardState)) {
+          if (tileIsOccupied(passedPosition, boardState)) {
             break;
           }
         }
@@ -182,7 +183,7 @@ export default class Referee {
           }
         } else {
           // dealing with destination tile
-          if (this.tileIsOccupied(passedPosition, boardState)) {
+          if (tileIsOccupied(passedPosition, boardState)) {
             break;
           }
         }
@@ -211,7 +212,7 @@ export default class Referee {
             return true;
           }
         } else {
-          if (this.tileIsOccupied(passedPosition, boardState)) {
+          if (tileIsOccupied(passedPosition, boardState)) {
             break;
           }
         }
@@ -233,7 +234,7 @@ export default class Referee {
             return true;
           }
         } else {
-          if (this.tileIsOccupied(passedPosition, boardState)) {
+          if (tileIsOccupied(passedPosition, boardState)) {
             break;
           }
         }
@@ -268,7 +269,7 @@ export default class Referee {
           return true;
         }
       } else {
-        if (this.tileIsOccupied(passedPosition, boardState)) {
+        if (tileIsOccupied(passedPosition, boardState)) {
           break;
         }
       }
@@ -303,7 +304,7 @@ export default class Referee {
           return true;
         }
       } else {
-        if (this.tileIsOccupied(passedPosition, boardState)) {
+        if (tileIsOccupied(passedPosition, boardState)) {
           break;
         }
       }

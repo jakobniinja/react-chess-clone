@@ -1,4 +1,5 @@
 import { Piece, Position, TeamType } from "../../Constants";
+import { tileIsOccupied, tileIsOccupiedByOpp } from "./GeneralRules";
 
 export const pawnMove = (
   initialPosition: Position,
@@ -15,8 +16,8 @@ export const pawnMove = (
     desiredPosition.y - initialPosition.y === 2 * pawnDirection
   ) {
     if (
-      !this.tileIsOccupied(desiredPosition, boardState) &&
-      !this.tileIsOccupied(
+      !tileIsOccupied(desiredPosition, boardState) &&
+      !tileIsOccupied(
         { x: desiredPosition.x, y: desiredPosition.y - pawnDirection },
         boardState
       )
@@ -27,7 +28,7 @@ export const pawnMove = (
     initialPosition.x === desiredPosition.x &&
     desiredPosition.y - initialPosition.y === pawnDirection
   ) {
-    if (!this.tileIsOccupied(desiredPosition, boardState)) {
+    if (!tileIsOccupied(desiredPosition, boardState)) {
       return true;
     }
   }
@@ -36,14 +37,14 @@ export const pawnMove = (
     desiredPosition.x - initialPosition.x === -1 &&
     desiredPosition.y - initialPosition.y === pawnDirection
   ) {
-    if (this.tileIsOccupiedByOpp(desiredPosition, boardState, team)) {
+    if (tileIsOccupiedByOpp(desiredPosition, boardState, team)) {
       return true;
     }
   } else if (
     desiredPosition.x - initialPosition.x === 1 &&
     desiredPosition.y - initialPosition.y === pawnDirection
   ) {
-    if (this.tileIsOccupiedByOpp(desiredPosition, boardState, team)) {
+    if (tileIsOccupiedByOpp(desiredPosition, boardState, team)) {
       return true;
     }
   }
