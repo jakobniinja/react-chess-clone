@@ -20,7 +20,9 @@ export default function Chessboard() {
   const [grabPosition, setGrabPosition] = useState<Position>({ x: -1, y: -1 });
   const chessboardRef = useRef<HTMLDivElement>(null);
   const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
+  const [promotionPawn, setPromotionPawn] = useState<Piece>();
   const referee = new Referee();
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const grabPiece = (e: React.MouseEvent) => {
     const chessboard = chessboardRef.current;
@@ -135,7 +137,8 @@ export default function Chessboard() {
               let promotionRow = i.team === TeamType.OUR ? 7 : 0;
 
               if (y === promotionRow) {
-                console.log(`this piece is up for promotion`);
+                modalRef.current?.classList.remove("hidden");
+                setPromotionPawn(i);
               }
               acc.push(i);
             } else if (!samePosition(i.position, { x, y })) {
@@ -160,6 +163,21 @@ export default function Chessboard() {
   };
 
   let board = [];
+  const promotePawn = (type: PieceType) => {
+      if (promotionPawn === undefined) return;
+    const updatedPieces = pieces.reduce((arr, i) => {
+
+      if (samePosition(i.position, promotionPawn.position)) {
+        i.type = type;
+        const teamType = (i.team  === TeamType.OUR) ? "w" : "b";
+        i.image= `assets/images/rook_${teamType}.png`
+      }
+      arr.push(i);
+      return arr;
+    }, [] as Piece[]);
+    setPieces(updatedPieces)
+    modalRef.current?.classList.add("hidden")
+  };
 
   for (let j = VERTICAL_AXIS.length - 1; j >= 0; j--) {
     for (let i = 0; i < HORIZONTAL_AXIS.length; i++) {
@@ -175,11 +193,25 @@ export default function Chessboard() {
 
   return (
     <>
-      <div id="pawn-promotion-modal">
-        <img src="/assets/images/rook_w.png" />
-        <img src="/assets/images/bishop_w.png" />
-        <img src="/assets/images/knight_w.png" />
-        <img src="/assets/images/queen_w.png" />
+      <div id="pawn-promotion-modal" className="hidden" ref={modalRef}>
+        <div className="modal-body">
+          <img
+            onClick={() => promotePawn(PieceType.ROOK)}
+            src="/assets/images/rook_w.png"
+          />
+          <img
+            onClick={() => promotePawn(PieceType.BISHOP)}
+            src="/assets/images/bishop_w.png"
+          />
+          <img
+            onClick={() => promotePawn(PieceType.KNIGHT)}
+            src="/assets/images/knight_w.png"
+          />
+          <img
+            onClick={() => promotePawn(PieceType.QUEEN)}
+            src="/assets/images/queen_w.png"
+          />
+        </div>
       </div>
 
       <div
