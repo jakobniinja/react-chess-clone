@@ -46,7 +46,6 @@ export default function Chessboard() {
 
     const chessboard = chessboardRef.current;
     if (activePiece && chessboard) {
-
       const minX = chessboard.offsetLeft - 25;
       const minY = chessboard.offsetTop - 25;
       const maxX = chessboard.offsetLeft + chessboard.clientWidth - 75;
@@ -128,15 +127,18 @@ export default function Chessboard() {
           // UPDATE THE PIECE POSITION
           const updatedPieces = pieces.reduce((acc, i) => {
             if (samePosition(i.position, grabPosition)) {
-              console.log(`grabbed piece: ${grabPiece}`)
               i.enPassent =
                 Math.abs(grabPosition.y - y) === 2 && i.type === PieceType.PAWN;
 
               i.position.x = x;
               i.position.y = y;
+              let promotionRow = i.team === TeamType.OUR ? 7 : 0;
+
+              if (y === promotionRow) {
+                console.log(`this piece is up for promotion`);
+              }
               acc.push(i);
             } else if (!samePosition(i.position, { x, y })) {
-                console.log(`not grabbed : ${i}`)
               if (i.type === PieceType.PAWN) {
                 i.enPassent = false;
               }
@@ -172,14 +174,23 @@ export default function Chessboard() {
   }
 
   return (
-    <div
-      onMouseMove={(e) => movePiece(e)}
-      onMouseDown={(e) => grabPiece(e)}
-      onMouseUp={(e) => dropPiece(e)}
-      id="chessboard"
-      ref={chessboardRef}
-    >
-      {board}
-    </div>
+    <>
+      <div id="pawn-promotion-modal">
+        <img src="/assets/images/rook_w.png" />
+        <img src="/assets/images/bishop_w.png" />
+        <img src="/assets/images/knight_w.png" />
+        <img src="/assets/images/queen_w.png" />
+      </div>
+
+      <div
+        onMouseMove={(e) => movePiece(e)}
+        onMouseDown={(e) => grabPiece(e)}
+        onMouseUp={(e) => dropPiece(e)}
+        id="chessboard"
+        ref={chessboardRef}
+      >
+        {board}
+      </div>
+    </>
   );
 }
