@@ -136,7 +136,7 @@ export default function Chessboard() {
               i.position.y = y;
               let promotionRow = i.team === TeamType.OUR ? 7 : 0;
 
-              if (y === promotionRow) {
+              if (y === promotionRow && i.type === PieceType.PAWN) {
                 modalRef.current?.classList.remove("hidden");
                 setPromotionPawn(i);
               }
@@ -163,20 +163,39 @@ export default function Chessboard() {
   };
 
   let board = [];
-  const promotePawn = (type: PieceType) => {
-      if (promotionPawn === undefined) return;
-    const updatedPieces = pieces.reduce((arr, i) => {
+  const promotionTeamType = () => {
+    return promotionPawn?.team === TeamType.OUR ? "w" : "b";
+  };
 
+  const promotePawn = (type: PieceType) => {
+    if (promotionPawn === undefined) return;
+    const updatedPieces = pieces.reduce((arr, i) => {
       if (samePosition(i.position, promotionPawn.position)) {
         i.type = type;
-        const teamType = (i.team  === TeamType.OUR) ? "w" : "b";
-        i.image= `assets/images/rook_${teamType}.png`
+        const teamType = i.team === TeamType.OUR ? "w" : "b";
+        let image = "";
+        switch (type) {
+          case PieceType.ROOK:
+            image = "rook";
+            break;
+          case PieceType.BISHOP:
+            image = "bishop";
+            break;
+          case PieceType.KNIGHT:
+            image = "knight";
+            break;
+
+          case PieceType.QUEEN:
+            image = "queen";
+            break;
+        }
+        i.image = `assets/images/${image}_${teamType}.png`;
       }
       arr.push(i);
       return arr;
     }, [] as Piece[]);
-    setPieces(updatedPieces)
-    modalRef.current?.classList.add("hidden")
+    setPieces(updatedPieces);
+    modalRef.current?.classList.add("hidden");
   };
 
   for (let j = VERTICAL_AXIS.length - 1; j >= 0; j--) {
@@ -197,19 +216,19 @@ export default function Chessboard() {
         <div className="modal-body">
           <img
             onClick={() => promotePawn(PieceType.ROOK)}
-            src="/assets/images/rook_w.png"
+            src={`/assets/images/rook_${promotionTeamType()}.png`}
           />
           <img
             onClick={() => promotePawn(PieceType.BISHOP)}
-            src="/assets/images/bishop_w.png"
+            src={`/assets/images/bishop_${promotionTeamType()}.png`}
           />
           <img
             onClick={() => promotePawn(PieceType.KNIGHT)}
-            src="/assets/images/knight_w.png"
+            src={`/assets/images/knight_${promotionTeamType()}.png`}
           />
           <img
             onClick={() => promotePawn(PieceType.QUEEN)}
-            src="/assets/images/queen_w.png"
+            src={`/assets/images/queen_${promotionTeamType()}.png`}
           />
         </div>
       </div>
